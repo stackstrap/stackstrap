@@ -1,3 +1,6 @@
+# vagrant
+.vagrant/
+
 # do not track the local master key file needed for provisioning
 salt/stackstrap-master.pub
 
