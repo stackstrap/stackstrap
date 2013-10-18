@@ -1,8 +1,9 @@
 # vagrant
 .vagrant/
 
-# do not track the local master key file needed for provisioning
-salt/stackstrap-master.pub
+# do not track the key files needed for provisioning
+salt/keys/*.pem
+salt/keys/*.pub
 
 # vim swap files
 .*.sw*
