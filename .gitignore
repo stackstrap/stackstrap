@@ -13,3 +13,7 @@ salt/keys/*.pub
 
 # os x cruft
 .DS_Store
+
+# RVM/Gemfile Stuff
+.ruby-version
+.ruby-gemset
