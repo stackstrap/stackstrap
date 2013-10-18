@@ -24,6 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "salt/roots", "/srv"
 
   config.vm.provision :salt do |salt|
+    salt.verbose = true
     salt.install_type = "stable"
     salt.install_master = true
 
