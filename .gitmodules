@@ -1,0 +1,3 @@
+[submodule "salt/roots"]
+	path = salt/roots
+	url = https://github.com/fatbox/stackstrap-salt
