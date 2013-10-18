@@ -20,28 +20,14 @@ You need to have the following software installed on your machine:
 At the time of writing the salty vagrant plugin (0.4.0) does not correctly work
 for our needs. Instead you need to [install from source](https://github.com/saltstack/salty-vagrant#installing-from-source).
 
-If this is the first run then it will bail out because you need to preseed
-the minion key in salty vagrant. The first step is to create an empty key file
-for the purpose of getting salt installed:
+If this is the first time this vagrant instance will be brought up then you
+need to generate your master & minion keys so thatt hey can be preseeded:
 
-  touch salt/stackstrap-master.pub
+    openssl genrsa -out salt/keys/master.pem 2048
+    openssl rsa -in salt/keys/master.pem -pubout > salt/keys/master.pub
+    openssl genrsa -out salt/keys/minion.pem 2048
+    openssl rsa -in salt/keys/minion.pem -pubout > salt/keys/minion.pub
 
-Then bring up the development server:
-
-   vagrant up
-
-This will install salt and then fail with an error "Minion did not return" when
-it tries to apply the high state. Next login to the server and get the correct
-public key contents:
-
-    vagrant ssh
-    sudo cat /etc/salt/pki/minion/minion.pub
-    exit
-
-Now put the contents of the minion's public key into the file you touched,
-salt/stackstrap-master.pub, and then re-provision with vagrant:
-
-    vagrant provision
-
-
-This pull is crucial: https://github.com/mitchellh/vagrant/pull/2359
+Once you have done this you can halt and up the vagrant instance all you want.
+The keys are marked to be ignored by git so you'll need to do this for each
+development instance you setup.
