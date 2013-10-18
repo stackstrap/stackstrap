@@ -13,12 +13,8 @@ Development of StackStrap
 
 You need to have the following software installed on your machine:
 
-* [Vagrant](http://vagrantup.com)
-* [VirtualBox](http://virtualbox.org)
-* [Salty Vagrant](https://github.com/saltstack/salty-vagrant/)
-
-At the time of writing the salty vagrant plugin (0.4.0) does not correctly work
-for our needs. Instead you need to [install from source](https://github.com/saltstack/salty-vagrant#installing-from-source).
+* [VirtualBox](http://virtualbox.org) (4.3.0 or greater)
+* [Vagrant](http://vagrantup.com) (1.3.5 or greater)
 
 If this is the first time this vagrant instance will be brought up then you
 need to generate your master & minion keys so thatt hey can be preseeded:
