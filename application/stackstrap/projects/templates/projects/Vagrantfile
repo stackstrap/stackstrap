@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby ts=2 sw=2 et sts=2 :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = {{ box|default:"precise32" }}
+  config.vm.box_url = {{ box_url|default:"http://files.vagrantup.com/precise32.box" }}
+
+  config.vm.network :public_network
+
+  config.ssh.forward_agent = true
+
+  # provision our box with salt
+  config.vm.provision :salt do |salt|
+    salt.install_type = "stable"
+
+    salt.minion_config = "salt/minion"
+    salt.minion_key = "salt/keys/minion.pem"
+    salt.minion_pub = "salt/keys/minion.pub"
+
+    salt.run_highstate = true
+  end
+end

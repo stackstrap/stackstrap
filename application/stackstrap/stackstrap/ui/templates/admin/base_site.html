@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_static %}
+
+{% block title %}{{ title }} | {% trans 'StackStrap' %}{% endblock %}
+
+{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{% static "admin/css/stackstrap.css" %}"/>{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{% trans 'StackStrap' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
