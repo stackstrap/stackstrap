@@ -13,7 +13,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   config.vm.network :public_network
-  config.ssh.forward_agent = true
 
   # we share our application folder with uid/gid 6000
   # this is the value our salt states will create for the
@@ -21,8 +20,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "application", "/application",
     owner: 6000, group: 6000
 
+  # since we're the salt master we need our salt roots shared
+  # stackstrap clients do not need to specify a salt synced folder
   config.vm.synced_folder "salt/roots", "/srv"
 
+  config.ssh.forward_agent = true
+
+  # provision our box with salt
   config.vm.provision :salt do |salt|
     salt.verbose = true
     salt.install_type = "stable"
