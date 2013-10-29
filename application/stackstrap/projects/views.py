@@ -1,4 +1,5 @@
 import os
+import shutil
 import StringIO
 import tempfile
 import zipfile
@@ -25,17 +26,10 @@ def zip(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     membership = get_object_or_404(Membership, project=project, user=request.user)
 
-    # XXX TODO
-    # this needs to be fetched based on the master_interface grain
-    # perhaps we add a host entry in the salt state and then look that up
-    master_ip = '192.168.2.44'
-
     context = {
             'user': request.user,
             'project': project,
             'membership': membership,
-            
-            'master': master_ip,
             }
 
     temp_files = [
@@ -65,6 +59,10 @@ def zip(request, project_id):
         zf.write(filename, filename.split(temp_dir)[1])
     zf.close()
 
+    # clean up our tempdir
+    shutil.rmtree(temp_dir)
+
+    # send our response
     resp = HttpResponse(zs.getvalue(), mimetype = "application/x-zip-compressed")
-    resp['Content-Disposition'] = 'attachment; filename=StackStrap-Project-Template-%s.zip' % project.name
+    resp['Content-Disposition'] = 'attachment; filename=StackStrap-Project-Template_%d-%s.zip' % (project.id, project.name)
     return resp
