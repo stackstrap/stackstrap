@@ -1,2 +1,2 @@
-master: {{ master }}
+master: stackstrap-master
 id: {{ membership.minion_id }}
