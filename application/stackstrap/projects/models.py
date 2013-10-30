@@ -6,11 +6,13 @@ import StringIO
 import subprocess
 import tempfile
 import zipfile
+import yaml
 
 from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.dispatch import receiver
+from django.template import Template as DjangoTemplate, Context
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -183,9 +185,33 @@ class Project(models.Model):
         with open(temp_file('salt', 'keys', 'minion.pub'), 'w') as f:
             f.write(membership.public_key.read())
 
+        def render_template(source):
+            if isinstance(source, basestring):
+                template_data = source
+            else:
+                template_data = source.read()
+            tmpl = DjangoTemplate(template_data)
+            return tmpl.render(Context(context))
+
         # read the metadata
         # apply the file & path templates
-        # TODO
+        if os.path.exists(temp_file('stackstrap')):
+            # get the stackstrap yaml from the template
+            with open(temp_file('stackstrap'), 'r') as yaml_file:
+                metadata = yaml.load(yaml_file).get("stackstrap", {})
+
+            # iterate the files to parse with django templates
+            file_template_paths = metadata.get("file_templates", [])
+            for path in file_template_paths:
+                template_data = render_template(open(temp_file(path), 'r'))
+                with open(temp_file(path), 'w') as template_file:
+                    template_file.write(template_data)
+
+            # iterate the paths to update with custom names
+            path_templates = metadata.get("path_templates", [])
+            for orig_path in path_templates:
+                new_path = render_template(path_templates[orig_path])
+                os.rename(temp_file(orig_path),temp_file(new_path))
 
         # build our zip file to be returned to the user
         zip_io = StringIO.StringIO()
