@@ -1,15 +1,20 @@
 import os
 import tempfile
+import sh
+import shutil
+import StringIO
 import subprocess
+import tempfile
+import zipfile
 
 from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.dispatch import receiver
+from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from git import Repo
 
 def key_name(instance, filename, extension):
     """
@@ -32,27 +37,32 @@ class Template(models.Model):
 
     git_url = models.CharField(
             max_length=255,
-            help_text=_("The URL of the git repository that contains this template (master branch)"))
+            help_text=_("The URL of the git repository that contains this template"))
+
+    git_ref = models.CharField(
+            max_length=64,
+            default="master",
+            help_text=_("The REF to use when applying the template to a project (ie. Git Tag or Branch)"))
 
     last_cache_update = models.DateTimeField(
             blank=True,
             null=True,
             help_text=_("The last time the local cache of the repository was updated"))
 
-    _repo = None
+    _git = None
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.git_url)
 
     @property
-    def local_repository_dir(self):
-        return os.path.join(settings.MEDIA_ROOT, "template_repository_cache", str(self.id))
+    def git(self):
+        if not self._git:
+            self._git = sh.git.bake(_cwd=self.local_repository_dir)
+        return self._git
 
     @property
-    def repo(self):
-        if not self._repo:
-            self._repo = Repo(self.local_repository_dir)
-        return self._repo
+    def local_repository_dir(self):
+        return os.path.join(settings.MEDIA_ROOT, "template_repository_cache", str(self.id))
 
     def create_local_repository(self):
         if os.path.exists(self.local_repository_dir):
@@ -64,16 +74,24 @@ class Template(models.Model):
                     self.git_url,
                     self.local_repository_dir))
 
-        #Repo.init(self.local_repository_dir, bare=True)
-        Repo.init(self.local_repository_dir)
+        os.makedirs(self.local_repository_dir)
 
-        self.repo.create_remote('origin', self.git_url)
+        self.git.init('--bare')
+        self.git.remote('add', 'origin', self.git_url)
+
         self.update_local_repository()
 
     def update_local_repository(self):
-        self.repo.remotes.origin.fetch()
+        self.git.fetch('origin')
         self.last_cache_update = now()
         self.save()
+
+    def archive_repository(self, destination):
+        archive_io = StringIO.StringIO()
+
+        self.git.archive("remotes/origin/%s" % self.git_ref, _out=archive_io)
+
+        sh.tar("xf", "-", _cwd=destination, _in=archive_io.getvalue())
 
 @receiver(models.signals.post_save, sender=Template)
 def template_populate_cache(sender, instance, created, *args, **kwargs):
@@ -127,6 +145,67 @@ class Project(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def make_zip(self, membership):
+        # get our temp dir
+        temp_dir = tempfile.mkdtemp()
+        temp_dir_len = len(temp_dir) + 1
+
+        # copy our template into the temp directory, if needed
+        if self.template:
+            self.template.archive_repository(temp_dir)
+
+        def temp_file(*args):
+            "closure to make generating temp file names easier"
+            return os.path.join(temp_dir, *args)
+
+        # make the rest of our dirs
+        os.mkdir(temp_file('salt'))
+        os.mkdir(temp_file('salt', 'keys'))
+
+        # build our context
+        context = {
+                'project': self,
+                'membership': membership,
+                'user': membership.user,
+                }
+
+        # render our files
+        with open(temp_file('Vagrantfile'), 'w') as f:
+            f.write(render_to_string('projects/Vagrantfile', context))
+
+        with open(temp_file('salt', 'minion'), 'w') as f:
+            f.write(render_to_string('projects/salt.minion', context))
+
+        with open(temp_file('salt', 'keys', 'minion.pem'), 'w') as f:
+            f.write(membership.private_key.read())
+
+        with open(temp_file('salt', 'keys', 'minion.pub'), 'w') as f:
+            f.write(membership.public_key.read())
+
+        # read the metadata
+        # apply the file & path templates
+        # TODO
+
+        # build our zip file to be returned to the user
+        zip_io = StringIO.StringIO()
+        zip_file = zipfile.ZipFile(zip_io, "w")
+
+        # recursively add our files
+        for base, dirs, files in os.walk(temp_dir):
+            for f in files:
+                # build the full name
+                zip_name = os.path.join(base, f)
+
+                # write the file relative to the top of the temp dir
+                zip_file.write(zip_name, zip_name[temp_dir_len:])
+
+        zip_file.close()
+
+        # clean up our tempdir
+        shutil.rmtree(temp_dir)
+
+        return zip_io.getvalue()
 
 class Membership(models.Model):
     """
