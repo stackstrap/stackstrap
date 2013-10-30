@@ -3,7 +3,11 @@
 {% for project in projects %}
 <div>
     <h2>{{ project.name }}</h2>
+    {{ project.description|linebreaks }}
     <dl>
+        <dt>Slug</dt>
+        <dd>{{ project.slug }}</dd>
+
         <dt>Template</dt>
         <dd>{{ project.template }}</dd>
 

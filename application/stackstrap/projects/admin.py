@@ -1,9 +1,24 @@
-from django.contrib import admin
+from django.conf.urls.defaults import patterns
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
 
 from .models import Project, Membership, Box, Template
 
 class TemplateAdmin(admin.ModelAdmin):
     list_display = ('name', 'git_url')
+
+    def get_urls(self):
+        urls = super(TemplateAdmin, self).get_urls()
+        return patterns('',
+            (r'(?P<template_id>\d+)/update_repository/$', self.admin_site.admin_view(self.update_repository)),
+        ) + urls
+
+    def update_repository(self, request, template_id):
+        template = Template.objects.get(id=template_id)
+        template.update_local_repository()
+        messages.success(request, "Successfully updated local repository cache")
+        return HttpResponseRedirect('..')
+
 
 class BoxAdmin(admin.ModelAdmin):
     list_display = ('name', 'url')
@@ -14,8 +29,9 @@ class MembershipInline(admin.TabularInline):
     extra = 0
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', '_members', 'box', 'template')
+    list_display = ('name', 'slug', '_members', 'box', 'template')
     list_filter = ('box', 'template')
+    prepopulated_fields = {"slug": ("name",)}
     search_fields = ('name',)
     inlines = (MembershipInline,)
 

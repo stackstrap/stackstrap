@@ -1,6 +1,0 @@
-{% extends "admin/change_form.html" %}
-
-{% block content %}
-{{ block.super }}
-<div>Project download URL: {% url 'project_zip' original.id %}</div>
-{% endblock %}
