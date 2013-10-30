@@ -5,7 +5,11 @@ import subprocess
 from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.dispatch import receiver
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+
+from git import Repo
 
 def key_name(instance, filename, extension):
     """
@@ -18,6 +22,85 @@ def key_name(instance, filename, extension):
                             extension)
                         )
 
+class Template(models.Model):
+    """
+    A template to use when creating projects
+    """
+    name = models.CharField(
+            max_length=128,
+            help_text=_("The name of this template"))
+
+    git_url = models.CharField(
+            max_length=255,
+            help_text=_("The URL of the git repository that contains this template (master branch)"))
+
+    last_cache_update = models.DateTimeField(
+            blank=True,
+            null=True,
+            help_text=_("The last time the local cache of the repository was updated"))
+
+    _repo = None
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.name, self.git_url)
+
+    @property
+    def local_repository_dir(self):
+        return os.path.join(settings.MEDIA_ROOT, "template_repository_cache", str(self.id))
+
+    @property
+    def repo(self):
+        if not self._repo:
+            self._repo = Repo(self.local_repository_dir)
+        return self._repo
+
+    def create_local_repository(self):
+        if os.path.exists(self.local_repository_dir):
+            raise RuntimeError(
+                "We were asked to create the local repository for %s "
+                "from the url %s, but the local dir (%s) already exists!"
+                "Cowardly refusing to continue..." % (
+                    self.name,
+                    self.git_url,
+                    self.local_repository_dir))
+
+        #Repo.init(self.local_repository_dir, bare=True)
+        Repo.init(self.local_repository_dir)
+
+        self.repo.create_remote('origin', self.git_url)
+        self.update_local_repository()
+
+    def update_local_repository(self):
+        self.repo.remotes.origin.fetch()
+        self.last_cache_update = now()
+        self.save()
+
+@receiver(models.signals.post_save, sender=Template)
+def template_populate_cache(sender, instance, created, *args, **kwargs):
+    if not created:
+        return
+
+    instance.create_local_repository()
+
+class Box(models.Model):
+    """
+    Holds the definition of our boxes that are used by projects
+    """
+    name = models.CharField(
+            max_length=128,
+            help_text=_("The name of this box"))
+
+    url = models.URLField(
+            max_length=255,
+            help_text=_("The URL to download this box, as used by Vagrant"))
+
+    class Meta:
+        verbose_name_plural = 'Boxes'
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.name, self.url)
+
+
 class Project(models.Model):
     """
     The model that holds our Project data
@@ -26,6 +109,16 @@ class Project(models.Model):
             max_length=128,
             help_text=_("The name of the project")
             )
+
+    box = models.ForeignKey(
+            Box,
+            help_text=_("The box this project should use"))
+
+    template = models.ForeignKey(
+            Template,
+            blank=True,
+            null=True,
+            help_text=_("The template this project should use"))
 
     members = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
