@@ -127,7 +127,18 @@ class Project(models.Model):
     """
     name = models.CharField(
             max_length=128,
-            help_text=_("The name of the project")
+            help_text=_("The name of the project, which should be succinct.")
+            )
+
+    slug = models.SlugField(
+            max_length=128,
+            help_text=_("A URL and file system safe version of the name")
+            )
+
+    description = models.TextField(
+            blank=True,
+            null=True,
+            help_text=_("A free form desription of the project for organizational purposes")
             )
 
     box = models.ForeignKey(
