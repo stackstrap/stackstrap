@@ -8,9 +8,8 @@ You need to have the following software installed on your machine:
 * Vagrant_ (1.3.5 or greater)
 
 If this is the first time this vagrant instance will be brought up then you
-need to generate your master & minion keys so thatt hey can be preseeded:
+need to generate your master & minion keys so that hey can be preseeded::
 
-.. code-block::
     openssl genrsa -out salt/keys/master.pem 2048
     openssl rsa -in salt/keys/master.pem -pubout > salt/keys/master.pub
     openssl genrsa -out salt/keys/minion.pem 2048
