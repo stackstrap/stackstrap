@@ -8,9 +8,10 @@ import tempfile
 import zipfile
 import yaml
 
-from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import models
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.template import Template as DjangoTemplate, Context
 from django.template.loader import render_to_string
@@ -297,7 +298,8 @@ class Membership(models.Model):
                             save=False
                             )
 
-                # TODO: install the public_key in the master
+                # install the public_key in the master
+                self.install_public_key()
 
             finally:
                 if private_file:
@@ -314,3 +316,18 @@ class Membership(models.Model):
                 self.user.id,
                 self.project.id
                 )
+
+    @property
+    def installed_public_key_filename(self):
+        return "/etc/salt/pki/master/minions/%s" % self.minion_id
+
+    def install_public_key(self):
+        shutil.copy(self.public_key.file.name, self.installed_public_key_filename)
+
+    def remove_public_key(self):
+        if os.path.exists(self.installed_public_key_filename):
+            os.remove(self.installed_public_key_filename)
+
+@receiver(pre_delete, sender=Membership)
+def remove_member_public_key(sender, instance, *args, **kwargs):
+    instance.remove_public_key()
