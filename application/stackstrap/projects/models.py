@@ -11,9 +11,9 @@ import yaml
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save, post_save
 from django.dispatch import receiver
-from django.template import Template as DjangoTemplate, Context
+from django.template import Template as Django_template, Context
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -121,6 +121,44 @@ class Box(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.url)
 
+class ZipCreator(object):
+    def temp_file(self, *args):
+        "make generating file names relative to our temp dir easier"
+        return os.path.join(self.temp_dir, *args)
+
+    def mkdir(self, *args):
+        "stub to make directories relative to our temp dir"
+        return os.mkdir(self.temp_file(*args))
+
+    def mkzip(self):
+        temp_dir_len = len(self.temp_dir) + 1
+
+        # build our zip file to be returned to the user
+        zip_io = StringIO.StringIO()
+        zip_file = zipfile.ZipFile(zip_io, "w")
+
+        # recursively add our files
+        for base, dirs, files in os.walk(self.temp_dir):
+            for f in files:
+                # build the full name
+                zip_name = os.path.join(base, f)
+
+                # write the file relative to the top of the temp dir
+                zip_file.write(zip_name, zip_name[temp_dir_len:])
+
+        zip_file.close()
+
+        return zip_io.getvalue()
+
+    def __enter__(self):
+        # get our temp dir
+        self.temp_dir = tempfile.mkdtemp()
+        return self
+
+    def __exit__(self, type, value, tb):
+        # clean up our tempdir
+        shutil.rmtree(self.temp_dir)
+
 
 class Project(models.Model):
     """
@@ -160,90 +198,70 @@ class Project(models.Model):
     def __unicode__(self):
         return self.name
 
-    def make_zip(self, membership):
-        # get our temp dir
-        temp_dir = tempfile.mkdtemp()
-        temp_dir_len = len(temp_dir) + 1
+    def make_project_zip(self, membership):
+        with ZipCreator() as z:
+            if self.template:
+                self.template.archive_repository(z.temp_dir)
 
-        # copy our template into the temp directory, if needed
-        if self.template:
-            self.template.archive_repository(temp_dir)
+            z.mkdir('salt')
+            z.mkdir('salt', 'keys')
 
-        def temp_file(*args):
-            "closure to make generating temp file names easier"
-            return os.path.join(temp_dir, *args)
+            # build our context
+            context = {
+                    'project': self,
+                    'membership': membership,
+                    }
 
-        # make the rest of our dirs
-        os.mkdir(temp_file('salt'))
-        os.mkdir(temp_file('salt', 'keys'))
+            # render our project template files that exist within the project app
+            with open(z.temp_file('Vagrantfile'), 'w') as f:
+                f.write(render_to_string('projects/Vagrantfile', context))
 
-        # build our context
-        context = {
-                'project': self,
-                'membership': membership,
-                'user': membership.user,
-                }
+            with open(z.temp_file('salt', 'minion'), 'w') as f:
+                f.write(render_to_string('projects/salt.minion', context))
 
-        # render our files
-        with open(temp_file('Vagrantfile'), 'w') as f:
-            f.write(render_to_string('projects/Vagrantfile', context))
+            def render_template(source):
+                "closure to read a file, parse it as a Django template and re-write it"
+                with open(source, 'r') as f:
+                    tmpl = Django_template(f.read())
+                file_contents = tmpl.render(Context(context))
 
-        with open(temp_file('salt', 'minion'), 'w') as f:
-            f.write(render_to_string('projects/salt.minion', context))
+                with open(source, 'w') as f:
+                    f.write(file_contents)
 
-        with open(temp_file('salt', 'keys', 'minion.pem'), 'w') as f:
-            f.write(membership.private_key.read())
+            # process the stackstrap meta data
+            pillar_file = z.temp_file('stackstrap', 'pillar.sls')
+            if os.path.exists(pillar_file):
+                render_template(pillar_file)
 
-        with open(temp_file('salt', 'keys', 'minion.pub'), 'w') as f:
-            f.write(membership.public_key.read())
+                # get the stackstrap yaml from the Project Template
+                with open(pillar_file, 'r') as f:
+                    metadata = yaml.load(f).get("stackstrap", {})
 
-        def render_template(source):
-            if isinstance(source, basestring):
-                template_data = source
-            else:
-                template_data = source.read()
-            tmpl = DjangoTemplate(template_data)
-            return tmpl.render(Context(context))
+                # iterate the files to parse with Django templates
+                file_template_paths = metadata.get("file_templates", [])
+                for path in file_template_paths:
+                    render_template(z.temp_file(path))
 
-        # read the metadata
-        # apply the file & path templates
-        if os.path.exists(temp_file('stackstrap')):
-            # get the stackstrap yaml from the template
-            with open(temp_file('stackstrap'), 'r') as yaml_file:
-                metadata = yaml.load(yaml_file).get("stackstrap", {})
+                # iterate the paths to update with custom names
+                path_templates = metadata.get("path_templates", [])
+                for orig_path in path_templates:
+                    os.rename(z.temp_file(orig_path), z.temp_file(path_templates[orig_path]))
 
-            # iterate the files to parse with django templates
-            file_template_paths = metadata.get("file_templates", [])
-            for path in file_template_paths:
-                template_data = render_template(open(temp_file(path), 'r'))
-                with open(temp_file(path), 'w') as template_file:
-                    template_file.write(template_data)
+            return z.mkzip()
 
-            # iterate the paths to update with custom names
-            path_templates = metadata.get("path_templates", [])
-            for orig_path in path_templates:
-                new_path = render_template(path_templates[orig_path])
-                os.rename(temp_file(orig_path),temp_file(new_path))
+    def make_keys_zip(self, membership):
+        with ZipCreator() as z:
+            z.mkdir('salt')
+            z.mkdir('salt', 'keys')
 
-        # build our zip file to be returned to the user
-        zip_io = StringIO.StringIO()
-        zip_file = zipfile.ZipFile(zip_io, "w")
+            with open(z.temp_file('salt', 'keys', 'minion.pem'), 'w') as f:
+                f.write(membership.private_key.read())
 
-        # recursively add our files
-        for base, dirs, files in os.walk(temp_dir):
-            for f in files:
-                # build the full name
-                zip_name = os.path.join(base, f)
+            with open(z.temp_file('salt', 'keys', 'minion.pub'), 'w') as f:
+                f.write(membership.public_key.read())
 
-                # write the file relative to the top of the temp dir
-                zip_file.write(zip_name, zip_name[temp_dir_len:])
+            return z.mkzip()
 
-        zip_file.close()
-
-        # clean up our tempdir
-        shutil.rmtree(temp_dir)
-
-        return zip_io.getvalue()
 
 class Membership(models.Model):
     """
@@ -260,55 +278,6 @@ class Membership(models.Model):
     private_key = models.FileField(
             upload_to=lambda i, f: key_name(i, f, '.pem')
             )
-
-    def save(self, *args, **kwargs):
-        """
-        If our public or private key is not set then auto generate them
-        """
-        if not self.private_key or not self.public_key:
-            private_file = public_file = None
-
-            try:
-                (fd, private_file) = tempfile.mkstemp()
-                ret = subprocess.Popen([
-                        "openssl", "genrsa",
-                        "-out", private_file,
-                        "2048"]
-                        ).wait()
-
-                with open(private_file, 'r') as f:
-                    self.private_key.save(
-                            key_name(self, '', '.pem'),
-                            ContentFile(f.read()),
-                            save=False
-                            )
-
-                (fd, public_file) = tempfile.mkstemp()
-                ret = subprocess.Popen([
-                        "openssl", "rsa",
-                        "-in", private_file,
-                        "-pubout",
-                        "-out", public_file]
-                        ).wait()
-
-                with open(public_file, 'r') as f:
-                    self.public_key.save(
-                            key_name(self, '', '.pub'),
-                            ContentFile(f.read()),
-                            save=False
-                            )
-
-                # install the public_key in the master
-                self.install_public_key()
-
-            finally:
-                if private_file:
-                    os.remove(private_file)
-
-                if public_file:
-                    os.remove(public_file)
-
-        super(Membership, self).save(*args, **kwargs)
 
     @property
     def minion_id(self):
@@ -327,6 +296,56 @@ class Membership(models.Model):
     def remove_public_key(self):
         if os.path.exists(self.installed_public_key_filename):
             os.remove(self.installed_public_key_filename)
+
+@receiver(pre_save, sender=Membership)
+def generate_keys(sender, instance, raw, *args, **kwargs):
+    """
+    If our public or private key is not set then auto generate them
+    """
+    if not instance.private_key or not instance.public_key:
+        private_file = public_file = None
+
+        try:
+            (fd, private_file) = tempfile.mkstemp()
+            ret = subprocess.Popen([
+                    "openssl", "genrsa",
+                    "-out", private_file,
+                    "2048"]
+                    ).wait()
+
+            with open(private_file, 'r') as f:
+                instance.private_key.save(
+                        key_name(instance, '', '.pem'),
+                        ContentFile(f.read()),
+                        save=False
+                        )
+
+            (fd, public_file) = tempfile.mkstemp()
+            ret = subprocess.Popen([
+                    "openssl", "rsa",
+                    "-in", private_file,
+                    "-pubout",
+                    "-out", public_file]
+                    ).wait()
+
+            with open(public_file, 'r') as f:
+                instance.public_key.save(
+                        key_name(instance, '', '.pub'),
+                        ContentFile(f.read()),
+                        save=False
+                        )
+
+        finally:
+            if private_file:
+                os.remove(private_file)
+
+            if public_file:
+                os.remove(public_file)
+
+
+@receiver(post_save, sender=Membership)
+def install_public_key(sender, instance, created, raw, *args, **kwargs):
+    instance.install_public_key()
 
 @receiver(pre_delete, sender=Membership)
 def remove_member_public_key(sender, instance, *args, **kwargs):
