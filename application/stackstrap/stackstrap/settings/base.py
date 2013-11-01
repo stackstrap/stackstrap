@@ -119,7 +119,7 @@ INSTALLED_APPS = (
     # local apps
     'auth',
     'projects',
-    'stackstrap.ui',
+    'ui',
 
     # 3rd party apps
     'south',
