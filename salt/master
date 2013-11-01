@@ -257,9 +257,10 @@ permissive_pki_access: True
 #     - /srv/salt/prod/services
 #     - /srv/salt/prod/states
 
-#file_roots:
-#  base:
-#    - /srv/salt
+file_roots:
+  base:
+    - /srv/salt
+    - /home/stackstrap/project_states
 
 # The hash_type is the hash to use when discovering the hash of a file on
 # the master server. The default is md5, but sha1, sha224, sha256, sha384
