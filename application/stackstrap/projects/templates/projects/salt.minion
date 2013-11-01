@@ -1,2 +1,3 @@
 master: {{ master }}
 id: {{ membership.minion_id }}
+state_verbose: False

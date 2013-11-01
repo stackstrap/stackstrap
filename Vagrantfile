@@ -46,26 +46,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
 
     salt.run_highstate = true
-
-    # this lists all of our default pillar data
-    salt.pillar({
-      'stackstrap' => {
-        # mode: dev|prod
-        # in dev mode we run nginx in proxy mode with runserver behind it
-        # in prod mode we run nginx + uwsgi
-        'mode' => 'dev',
-
-        # the hostname to use when configuring nginx
-        'http_server_name' => '_',
-
-        # the port to listen on
-        'http_listen' => '80',
-
-        # the interface on which to connect to our master
-        # this is setup to be eth1 by default so that it works on our virtualbox
-        # guest images, you'll want to change it in production
-        'master_interface' => 'eth1'
-      }
-    })
-  end
 end
