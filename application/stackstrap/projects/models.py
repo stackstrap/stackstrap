@@ -3,9 +3,7 @@ import tempfile
 import sh
 import shutil
 import StringIO
-import subprocess
 import tempfile
-import zipfile
 import yaml
 
 from django.conf import settings
@@ -18,17 +16,8 @@ from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-
-def key_name(instance, filename, extension):
-    """
-    Callable for the upload_to parameter of our membership files
-    """
-    return os.path.join('public_keys',
-                        'project-%d' % instance.project.id,
-                        "%s%s" % (
-                            instance.user.email,
-                            extension)
-                        )
+from utils.ip import interface_ip
+from utils.zip import ZipCreator
 
 class Template(models.Model):
     """
@@ -89,12 +78,18 @@ class Template(models.Model):
         self.last_cache_update = now()
         self.save()
 
-    def archive_repository(self, destination):
+    def archive_repository(self, destination, *archive_args):
         archive_io = StringIO.StringIO()
 
-        self.git.archive("remotes/origin/%s" % self.git_ref, _out=archive_io)
+        self.git.archive("remotes/origin/%s" % self.git_ref, *archive_args, _out=archive_io)
 
         sh.tar("xf", "-", _cwd=destination, _in=archive_io.getvalue())
+
+    def update_state_file(self, project):
+        temp_dir = tempfile.mkdtemp()
+        self.archive_repository(temp_dir, "--", "stackstrap/state.sls")
+        shutil.copy(os.path.join(temp_dir, "stackstrap", "state.sls"), "/home/stackstrap/project_states/project-%d.sls" % project.id)
+        shutil.rmtree(temp_dir)
 
 @receiver(models.signals.post_save, sender=Template)
 def template_populate_cache(sender, instance, created, *args, **kwargs):
@@ -102,6 +97,15 @@ def template_populate_cache(sender, instance, created, *args, **kwargs):
         return
 
     instance.create_local_repository()
+
+@receiver(models.signals.post_save, sender=Template)
+def update_template_project_state_files(sender, instance, created, *args, **kwargs):
+    if created:
+        return
+
+    for project in instance.projects.all():
+        instance.update_state_file(project)
+
 
 class Box(models.Model):
     """
@@ -120,44 +124,6 @@ class Box(models.Model):
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.url)
-
-class ZipCreator(object):
-    def temp_file(self, *args):
-        "make generating file names relative to our temp dir easier"
-        return os.path.join(self.temp_dir, *args)
-
-    def mkdir(self, *args):
-        "stub to make directories relative to our temp dir"
-        return os.mkdir(self.temp_file(*args))
-
-    def mkzip(self):
-        temp_dir_len = len(self.temp_dir) + 1
-
-        # build our zip file to be returned to the user
-        zip_io = StringIO.StringIO()
-        zip_file = zipfile.ZipFile(zip_io, "w")
-
-        # recursively add our files
-        for base, dirs, files in os.walk(self.temp_dir):
-            for f in files:
-                # build the full name
-                zip_name = os.path.join(base, f)
-
-                # write the file relative to the top of the temp dir
-                zip_file.write(zip_name, zip_name[temp_dir_len:])
-
-        zip_file.close()
-
-        return zip_io.getvalue()
-
-    def __enter__(self):
-        # get our temp dir
-        self.temp_dir = tempfile.mkdtemp()
-        return self
-
-    def __exit__(self, type, value, tb):
-        # clean up our tempdir
-        shutil.rmtree(self.temp_dir)
 
 
 class Project(models.Model):
@@ -186,6 +152,7 @@ class Project(models.Model):
 
     template = models.ForeignKey(
             Template,
+            related_name='projects',
             blank=True,
             null=True,
             help_text=_("The template this project should use"))
@@ -210,26 +177,43 @@ class Project(models.Model):
             context = {
                     'project': self,
                     'membership': membership,
+                    'master': settings.MASTER_HOSTNAME,
+                    'master_ip': interface_ip(settings.MASTER_INTERFACE)
                     }
 
             # render our project template files that exist within the project app
-            with open(z.temp_file('Vagrantfile'), 'w') as f:
+            with open(z.path.join('Vagrantfile'), 'w') as f:
                 f.write(render_to_string('projects/Vagrantfile', context))
 
-            with open(z.temp_file('salt', 'minion'), 'w') as f:
+            with open(z.path.join('salt', 'minion'), 'w') as f:
                 f.write(render_to_string('projects/salt.minion', context))
+
+            # put a file in place so our keys dir will exist in the zip and will
+            # explain what the dir is and where to get the keys
+            with open(z.path.join('salt', 'keys', 'README'), 'w') as f:
+                f.write("You need to place **your** specific salt keys in this directory\n")
+                f.write("Keys can be obtained from: http://%s/\n" % settings.MASTER_HOSTNAME)
+                f.write("The .zip file you download should be extracted in this directory.\n")
+                f.write("When complete you should have a minion.pub & minion.pem file in this directory\n")
+
+            # make sure the salt keys are ignored in git repositories
+            # we use append mode here so that we don't clobber an existing
+            # .gitignore file
+            with open(z.path.join('.gitignore'), 'a') as f:
+                f.write("# Ignore local salt keys\n")
+                f.write("salt/keys/*.p[eu][mb]\n")
 
             def render_template(source):
                 "closure to read a file, parse it as a Django template and re-write it"
                 with open(source, 'r') as f:
-                    tmpl = Django_template(f.read())
-                file_contents = tmpl.render(Context(context))
+                    t = Django_template(f.read())
+                file_contents = t.render(Context(context))
 
                 with open(source, 'w') as f:
                     f.write(file_contents)
 
             # process the stackstrap meta data
-            pillar_file = z.temp_file('stackstrap', 'pillar.sls')
+            pillar_file = z.path.join('stackstrap', 'pillar.sls')
             if os.path.exists(pillar_file):
                 render_template(pillar_file)
 
@@ -240,28 +224,40 @@ class Project(models.Model):
                 # iterate the files to parse with Django templates
                 file_template_paths = metadata.get("file_templates", [])
                 for path in file_template_paths:
-                    render_template(z.temp_file(path))
+                    render_template(z.path.join(path))
 
                 # iterate the paths to update with custom names
                 path_templates = metadata.get("path_templates", [])
                 for orig_path in path_templates:
-                    os.rename(z.temp_file(orig_path), z.temp_file(path_templates[orig_path]))
+                    os.rename(z.path.join(orig_path),
+                              z.path.join(path_templates[orig_path]))
 
             return z.mkzip()
 
     def make_keys_zip(self, membership):
         with ZipCreator() as z:
-            z.mkdir('salt')
-            z.mkdir('salt', 'keys')
-
-            with open(z.temp_file('salt', 'keys', 'minion.pem'), 'w') as f:
+            with open(z.path.join('minion.pem'), 'w') as f:
                 f.write(membership.private_key.read())
 
-            with open(z.temp_file('salt', 'keys', 'minion.pub'), 'w') as f:
+            with open(z.path.join('minion.pub'), 'w') as f:
                 f.write(membership.public_key.read())
 
             return z.mkzip()
 
+@receiver(models.signals.post_save, sender=Project)
+def update_project_state_files(sender, instance, created, *args, **kwargs):
+    instance.template.update_state_file(instance)
+
+def key_name(instance, filename, extension):
+    """
+    Callable for the upload_to parameter of our membership files
+    """
+    return os.path.join('public_keys',
+                        'project-%d' % instance.project.id,
+                        "%s%s" % (
+                            instance.user.email,
+                            extension)
+                        )
 
 class Membership(models.Model):
     """
@@ -307,11 +303,7 @@ def generate_keys(sender, instance, raw, *args, **kwargs):
 
         try:
             (fd, private_file) = tempfile.mkstemp()
-            ret = subprocess.Popen([
-                    "openssl", "genrsa",
-                    "-out", private_file,
-                    "2048"]
-                    ).wait()
+            sh.openssl.genrsa("-out", private_file, "2048")
 
             with open(private_file, 'r') as f:
                 instance.private_key.save(
@@ -321,12 +313,7 @@ def generate_keys(sender, instance, raw, *args, **kwargs):
                         )
 
             (fd, public_file) = tempfile.mkstemp()
-            ret = subprocess.Popen([
-                    "openssl", "rsa",
-                    "-in", private_file,
-                    "-pubout",
-                    "-out", public_file]
-                    ).wait()
+            sh.openssl.rsa("-in", private_file, "-pubout", "-out", public_file)
 
             with open(public_file, 'r') as f:
                 instance.public_key.save(
@@ -334,7 +321,6 @@ def generate_keys(sender, instance, raw, *args, **kwargs):
                         ContentFile(f.read()),
                         save=False
                         )
-
         finally:
             if private_file:
                 os.remove(private_file)

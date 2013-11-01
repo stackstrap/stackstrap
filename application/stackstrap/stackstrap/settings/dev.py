@@ -1,5 +1,9 @@
 from .base import *
 
+# In dev mode we use eth1 as the master interface since Vagrant configures a
+# private network on eth0 and puts our bridge on eth1
+MASTER_INTERFACE = 'eth1'
+
 DEBUG = True
 TEMPLATE_DEBUG = True
 

@@ -11,6 +11,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.forward_agent = true
 
+  # ensure the box can reach the master
+  # first delete any reference to the master in the hosts file
+  # then add it in with the current master ip
+  config.vm.provision :shell,
+    inline: 'sed -i -e "/{{ master }}/d" /etc/hosts'
+  config.vm.provision :shell,
+    inline: 'printf "{{ master_ip }}\t{{ master }}" >> /etc/hosts'
+
   # provision our box with salt
   config.vm.provision :salt do |salt|
     salt.install_type = "stable"

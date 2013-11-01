@@ -1,5 +1,12 @@
 # Django settings for stackstrap project.
 
+# The master interface is the interface which salt & stackstrap should be
+# addressed at, by default it is eth0, which should suit most deployments
+MASTER_INTERFACE = 'eth0'
+
+# The hostname that the master can be reached at
+MASTER_HOSTNAME = 'stackstrap-master'
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
