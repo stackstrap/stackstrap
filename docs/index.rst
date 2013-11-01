@@ -27,6 +27,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   deployment.rst
    templates.rst
    development.rst
 
