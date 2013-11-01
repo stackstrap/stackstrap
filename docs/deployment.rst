@@ -40,6 +40,9 @@ Available configuration items
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **mode** - This can be set to ``dev`` or ``prod``. By default it is ``dev``.
+This affects how the master application is run. In ``dev`` mode it runs the
+Django built-in server (``runserver``) and in ``prod`` mode it runs the
+application under uwsgi behind nginx.
 
 **http_server_name** - The name to apply to the nginx ``server`` block. By
 default it is ``_`` (match any name supplied).
