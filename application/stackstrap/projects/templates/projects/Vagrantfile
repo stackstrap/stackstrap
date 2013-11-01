@@ -21,6 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # provision our box with salt
   config.vm.provision :salt do |salt|
+    salt.verbose = true
     salt.install_type = "stable"
 
     salt.minion_config = "salt/minion"
