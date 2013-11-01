@@ -7,8 +7,9 @@ Overview
 --------
 
 Let's face it, writing code is awesome, but writing code in a team without
-a great strategy and a solid devops team supporting you it can get really
-frustrating.
+a great strategy and a solid devops team supporting you can get really
+frustrating when trying to manage development environments within the
+team. 
 
 Vagrant_ does an amazing job or automating the task of bringing up virtual
 machines for development, but it doesn't do too much in the way of configuring
