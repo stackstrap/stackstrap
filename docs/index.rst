@@ -17,7 +17,7 @@ to configure the system after Vagrant creates it but knowing how you should be
 configuring the system is a whole other question.
 
 StackStrap aims to ease this situation by utilizing the Salt_ provisioner in
-Vagrant along with a `community repository` of Salt_ states combined with an
+Vagrant along with a `community repository`_ of Salt_ states combined with an
 easy to use web interface, built using Django, that allows you to quickly and
 reliably create development environments (and in the future provision your
 production servers too).
