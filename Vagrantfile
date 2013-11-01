@@ -18,7 +18,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # this is the value our salt states will create for the
   # stackstrap user
   config.vm.synced_folder "application", "/application",
-    owner: 6000, group: 6000
+    :mount_options => ["uid=6000,gid=6000"]
+    #owner: 6000, group: 6000 # XXX TODO https://github.com/mitchellh/vagrant/pull/2390
 
   # since we're the salt master we need our salt roots shared
   # stackstrap clients do not need to specify a salt synced folder
