@@ -8,20 +8,35 @@ Like all systems managed by the master, it itself is configured by itself so
 deployment is a fairly straight forward task.
 
 #. Install the base OS, pick a hostname that starts with ``stackstrap-master``,
-   ie. ``stackstrap-master.yourdomain.com``
-#. Install salt using the `salt-bootstrap`_ script
+   ie. ``stackstrap-master.yourdomain.com``. The hostname should also resolve
+   without the domain name, ie. ``ping stackstrap-master`` works
+#. Install salt using the `salt-bootstrap`_ script. Specify ``-M`` to install
+   the master::
+
+   # wget --no-check-certificate -O bootstrap.sh http://bootstrap.saltstack.org
+   # sh bootstrap.sh -- -M
+
 #. Create the stackstrap group & user::
 
-    groupadd -g 6000 stackstrap
-    useradd -d /home/stackstrap -m -s /bin/sh -u 6000 -g 6000 stackstrap
+    # groupadd -g 6000 stackstrap
+    # useradd -d /home/stackstrap -m -s /bin/sh -u 6000 -g 6000 stackstrap
 
 #. Checkout the stackstrap code to ``/home/stackstrap/application``
 #. Copy the salt config into place::
 
-    cp -f /home/stackstrap/application/salt/{master,minion} /etc/salt/
+    # cp -f /home/stackstrap/application/salt/{master,minion} /etc/salt/
 
 #. Create your configuration (see below)
 #. Run highstate: ``salt-call state.highstate``
+#. Create the Django database and initial admin user::
+
+    # su - stackstrap
+    $ source virtualenv/bin/activate
+    $ export PYTHONPATH=/home/stackstrap/application/stackstrap
+    $ export DJANGO_SETTINGS_MODULE=stackstrap.settings.prod
+    $ django-admin.py syncdb
+    $ supervisorctl start stackstrap
+
 #. Profit
 
 Creating a configuration
