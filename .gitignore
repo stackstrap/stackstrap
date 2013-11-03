@@ -6,7 +6,7 @@ salt/keys/*.pem
 salt/keys/*.pub
 
 # pycharm
-.idea 
+.idea/
 
 # vim swap files
 .*.sw*
