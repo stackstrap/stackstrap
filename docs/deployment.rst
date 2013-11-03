@@ -21,13 +21,37 @@ deployment is a fairly straight forward task.
     # groupadd -g 6000 stackstrap
     # useradd -d /home/stackstrap -m -s /bin/sh -u 6000 -g 6000 stackstrap
 
-#. Checkout the stackstrap code to ``/home/stackstrap/application``
+#. To allow salt to do most of the work we need to manually create a release
+   for stackstrap so we can use its salt states::
+
+   # apt-get install git
+   # su - stackstrap
+   $ mkdir releases
+   $ cd releases
+   $ git clone https://github.com/fatbox/stackstrap.git initial
+   $ cd initial
+   $ git submodule init
+   $ git submodule update
+   $ cd ~
+   $ ln -s releases/initial current
+
 #. Copy the salt config into place::
 
-    # cp -f /home/stackstrap/application/salt/{master,minion} /etc/salt/
+    # cp -f /home/stackstrap/current/salt/{master,minion} /etc/salt/
+    # service salt-master restart
+    # service salt-minion restart
 
-#. Create your configuration (see below)
-#. Run highstate: ``salt-call state.highstate``
+#. Make sure the key is accepted. Replace the hostname below with your FQDN::
+
+    # salt-key -ya stackstrap-master.fatbox.ca
+
+#. Set the master to be in production mode. See `Creating a configuration`_
+   below.
+
+#. Let salt configure everything else you'll need::
+
+   # salt-call state.highstate
+
 #. Create the Django database and initial admin user::
 
     # su - stackstrap
@@ -41,15 +65,23 @@ deployment is a fairly straight forward task.
 
 Creating a configuration
 ------------------------
-The StackStrap Master is configured through the salt grains system.
+The StackStrap Master is configured through the salt grains system. By default
+the master is configured for dev mode.
 
 Create a file named: ``/etc/salt/minion.d/stackstrap.conf``
 
-Configure the grains under the ``stackstrap`` namespace::
+Configure the grains under the ``stackstrap`` namespace. The following is a
+minimal example that puts the master into production mode with all the other
+settings as their defaults::
 
      grains:
        stackstrap:
          mode: 'prod'
+
+Any time this configuration is updated you should re-apply the state via salt
+to ensure the system is configured correctly::
+
+    # salt-call state.highstate
 
 Available configuration items
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

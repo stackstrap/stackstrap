@@ -28,6 +28,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   conventions.rst
    deployment.rst
    templates.rst
    development.rst
