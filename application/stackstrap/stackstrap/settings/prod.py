@@ -13,7 +13,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = [
-    config.get('allowed_hosts', config.get('hostname', 'stackstrap-master.local'))
+    config.get('allowed_hosts', config.get('http_server_name', 'stackstrap-master'))
     ]
 
 DATABASES = {
