@@ -4,8 +4,8 @@ try:
     import yaml
 
     with open('/etc/salt/minion.d/stackstrap.conf', 'r') as f:
-        grains = yaml.load(f.read())
-    config = grains.get('stackstrap', {})
+        yaml_data = yaml.load(f.read())
+    config = yaml_data.get('grains', {}).get('stackstrap', {})
 except:
     config = {}
 
