@@ -2,7 +2,7 @@
  * StackStrap Django Admin CSS overrides
  */
 
-@import url(http://fonts.googleapis.com/css?family=Lekton:400,700);
+@import url(//fonts.googleapis.com/css?family=Lekton:400,700);
 
 body.login div#branding h1 {
     text-align: center;
