@@ -8,6 +8,7 @@ import yaml
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import pre_delete, pre_save, post_save
 from django.dispatch import receiver
@@ -132,12 +133,13 @@ class Project(models.Model):
     """
     name = models.CharField(
             max_length=128,
-            help_text=_("The name of the project, which should be succinct.")
+            help_text=_("The name of the project")
             )
 
-    slug = models.SlugField(
-            max_length=128,
-            help_text=_("A URL and file system safe version of the name")
+    short_name = models.CharField(
+            max_length=64,
+            help_text=_("A URL and file system safe version of the name: [a-z0-9_.]"),
+            validators=[RegexValidator(r'[a-z0-9_\.]+')]
             )
 
     description = models.TextField(
