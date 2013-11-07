@@ -13,6 +13,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.forward_agent = true
 
+  config.vm.synced_folder ".", "/project",
+    :extra => ["dmode=755","fmode=755"]
+
   # ensure the box can reach the master
   # first delete any reference to the master in the hosts file
   # then add it in with the current master ip
