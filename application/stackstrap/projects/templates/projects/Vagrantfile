@@ -4,6 +4,8 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.hostname = "{{ project.short_name }}-user{{ membership.user.id }}"
+
   config.vm.box = "{{ project.box.name }}"
   config.vm.box_url = "{{ project.box.url }}"
 
@@ -30,4 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     salt.run_highstate = true
   end
+
+  config.vm.provision :shell,
+    inline: 'echo; echo; echo "Your development environment is now configured"; echo "You can access it at http://{{ project.short_name }}-user{{ membership.user.id }}.local/"; echo'
 end
