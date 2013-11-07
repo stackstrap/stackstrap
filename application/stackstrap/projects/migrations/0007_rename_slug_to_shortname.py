@@ -8,10 +8,10 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.rename_column(u'app_foo', 'slug', 'short_name')
+        db.rename_column(u'projects_project', 'slug', 'short_name')
 
     def backwards(self, orm):
-        db.rename_column(u'app_foo', 'short_name', 'slug')
+        db.rename_column(u'projects_project', 'short_name', 'slug')
 
 
     models = {

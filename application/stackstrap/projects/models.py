@@ -50,7 +50,9 @@ class Template(models.Model):
     @property
     def git(self):
         if not self._git:
-            self._git = sh.git.bake(_cwd=self.local_repository_dir)
+            self._git = sh.git.bake(_cwd=self.local_repository_dir, _env={
+                'GIT_SSH': os.path.join(settings.PROJECT_ROOT, "projects/scripts/loose_ssh.sh")
+            })
         return self._git
 
     @property
@@ -138,7 +140,7 @@ class Project(models.Model):
 
     short_name = models.CharField(
             max_length=64,
-            help_text=_("A URL and file system safe version of the name: [a-z0-9_.]"),
+            help_text=_("A URL and file system safe versAion of the name [a-z0-9_]"),
             validators=[RegexValidator(r'[a-z0-9_\.]+')]
             )
 
