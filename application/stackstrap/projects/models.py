@@ -1,8 +1,6 @@
 import os
-import tempfile
 import sh
 import shutil
-import StringIO
 import tempfile
 import yaml
 
@@ -82,11 +80,13 @@ class Template(models.Model):
         self.save()
 
     def archive_repository(self, destination, *archive_args):
-        archive_io = StringIO.StringIO()
-
-        self.git.archive("remotes/origin/%s" % self.git_ref, *archive_args, _out=archive_io)
-
-        sh.tar("xf", "-", _cwd=destination, _in=archive_io.getvalue())
+        try:
+            (fd, tar_file) = tempfile.mkstemp()
+            self.git.archive("remotes/origin/%s" % self.git_ref, *archive_args, _out=tar_file)
+            sh.tar("xf", tar_file, _cwd=destination)
+        finally:
+            if tar_file:
+                os.remove(tar_file)
 
     def update_state_file(self, project):
         temp_dir = tempfile.mkdtemp()
