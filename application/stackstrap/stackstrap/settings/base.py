@@ -1,5 +1,12 @@
 # Django settings for stackstrap project.
 
+import os
+
+_ = gettext = lambda s: s
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+project_dir = lambda *args: join(PROJECT_ROOT, *args)
+
 # The master interface is the interface which salt & stackstrap should be
 # addressed at, by default it is eth0, which should suit most deployments
 MASTER_INTERFACE = 'eth0'
