@@ -31,7 +31,6 @@ class MembershipInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'short_name', '_members', 'box', 'template')
     list_filter = ('box', 'template')
-    prepopulated_fields = {"short_name": ("name",)}
     search_fields = ('name',)
     inlines = (MembershipInline,)
 
