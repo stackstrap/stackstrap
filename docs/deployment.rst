@@ -14,7 +14,7 @@ deployment is a fairly straight forward task.
    the master::
 
     # wget --no-check-certificate -O bootstrap.sh http://bootstrap.saltstack.org
-    # sh bootstrap.sh -- -M
+    # sh bootstrap.sh -M
 
 #. Create the stackstrap group & user::
 
