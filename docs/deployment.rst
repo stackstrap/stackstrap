@@ -13,8 +13,8 @@ deployment is a fairly straight forward task.
 #. Install salt using the `salt-bootstrap`_ script. Specify ``-M`` to install
    the master::
 
-   # wget --no-check-certificate -O bootstrap.sh http://bootstrap.saltstack.org
-   # sh bootstrap.sh -- -M
+    # wget --no-check-certificate -O bootstrap.sh http://bootstrap.saltstack.org
+    # sh bootstrap.sh -- -M
 
 #. Create the stackstrap group & user::
 
@@ -24,16 +24,16 @@ deployment is a fairly straight forward task.
 #. To allow salt to do most of the work we need to manually create a release
    for stackstrap so we can use its salt states::
 
-   # apt-get install git
-   # su - stackstrap
-   $ mkdir releases
-   $ cd releases
-   $ git clone https://github.com/fatbox/stackstrap.git initial
-   $ cd initial
-   $ git submodule init
-   $ git submodule update
-   $ cd ~
-   $ ln -s releases/initial current
+    # apt-get install git
+    # su - stackstrap
+    $ mkdir releases
+    $ cd releases
+    $ git clone https://github.com/fatbox/stackstrap.git initial
+    $ cd initial
+    $ git submodule init
+    $ git submodule update
+    $ cd ~
+    $ ln -s releases/initial current
 
 #. Copy the salt config into place::
 
@@ -50,7 +50,7 @@ deployment is a fairly straight forward task.
 
 #. Let salt configure everything else you'll need::
 
-   # salt-call state.highstate
+    # salt-call state.highstate
 
 #. Create the Django database and initial admin user::
 
@@ -74,9 +74,9 @@ Configure the grains under the ``stackstrap`` namespace. The following is a
 minimal example that puts the master into production mode with all the other
 settings as their defaults::
 
-     grains:
-       stackstrap:
-         mode: 'prod'
+    grains:
+      stackstrap:
+        mode: 'prod'
 
 Any time this configuration is updated you should re-apply the state via salt
 to ensure the system is configured correctly::
