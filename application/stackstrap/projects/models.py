@@ -94,6 +94,12 @@ class Template(models.Model):
         shutil.copy(os.path.join(temp_dir, "stackstrap", "state.sls"), "/home/stackstrap/project_states/project-%d.sls" % project.id)
         shutil.rmtree(temp_dir)
 
+    def update_pillar_file(self, project):
+        temp_dir = tempfile.mkdtemp()
+        self.archive_repository(temp_dir, "--", "stackstrap/pillar.sls")
+        shutil.copy(os.path.join(temp_dir, "stackstrap", "pillar.sls"), "/home/stackstrap/project_pillars/project-%d.sls" % project.id)
+        shutil.rmtree(temp_dir)
+
 @receiver(models.signals.post_save, sender=Template)
 def template_populate_cache(sender, instance, created, *args, **kwargs):
     if not created:
@@ -108,6 +114,7 @@ def update_template_project_state_files(sender, instance, created, *args, **kwar
 
     for project in instance.projects.all():
         instance.update_state_file(project)
+        instance.update_pillar_file(project)
 
 
 class Box(models.Model):
@@ -252,6 +259,7 @@ class Project(models.Model):
 @receiver(models.signals.post_save, sender=Project)
 def update_project_state_files(sender, instance, created, *args, **kwargs):
     instance.template.update_state_file(instance)
+    instance.template.update_pillar_file(instance)
 
 def key_name(instance, filename, extension):
     """
