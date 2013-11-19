@@ -340,6 +340,7 @@ file_roots:
 pillar_roots:
   base:
     - /home/stackstrap/current/salt/roots/pillar
+    - /home/stackstrap/project_pillars
 
 #ext_pillar:
 #  - hiera: /etc/hiera.yaml
