@@ -23,7 +23,20 @@ easy to use web interface, built using Django, that allows you to quickly and
 reliably create development environments (and in the future provision your
 production servers too).
 
-Contents:
+Here be dragons
+---------------
+StackStrap is currently **alpha** quality software and is undergoing rapid
+change. The interface, salt integration, template format and all other pieces
+of the system are in flux and may change at any time without notice.
+
+Getting Help
+------------
+You can find us in #stackstrap on freenode if you want to chat or need help.
+
+There is also a `Google Group`_ (stackstrap@googlegroups.com).
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -37,3 +50,4 @@ Contents:
 .. _Salt: http://saltstack.com/
 .. _provisioners: http://docs.vagrantup.com/v2/provisioning/index.html
 .. _community repository: https://github.com/fatbox/stackstrap-salt
+.. _Google Group: https://groups.google.com/d/forum/stackstrap
