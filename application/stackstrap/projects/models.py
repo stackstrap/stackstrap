@@ -232,9 +232,10 @@ class Project(models.Model):
 
                 # iterate the paths to update with custom names
                 path_templates = metadata.get("path_templates", [])
-                for orig_path in path_templates:
-                    os.rename(z.path.join(orig_path),
-                              z.path.join(path_templates[orig_path]))
+                for path_template in path_templates:
+                    for orig_path in path_template:
+                        os.rename(z.path.join(orig_path),
+                                  z.path.join(path_template[orig_path]))
 
             return z.mkzip()
 

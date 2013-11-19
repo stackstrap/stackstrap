@@ -83,8 +83,8 @@ available context variables, as the value::
 
     stackstrap:
       path_templates:
-        'project_app/something/else': 'project_app/something/{{ project.id }}'
-        'project_app': '{{ project.slug }}_app'
+        - 'project_app/something/else': 'project_app/something/{{ project.id }}'
+        - 'project_app': '{{ project.slug }}_app'
 
 Filesystem paths are transformed in the order they are listed, so list your
 more specific matches first as in the example above. Also, the filesystem
