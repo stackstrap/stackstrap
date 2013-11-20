@@ -13,8 +13,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.forward_agent = true
 
-  config.vm.synced_folder ".", "/project",
-    :mount_options => ["dmode=755","fmode=755"]
+  config.vm.synced_folder ".", "/home/{{ project.short_name }}/current",
+    :mount_options => ["dmode=755", "fmode=755", "uid=6000", "gid=6000"]
 
   # ensure the box can reach the master
   # first delete any reference to the master in the hosts file

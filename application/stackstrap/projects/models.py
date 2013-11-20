@@ -6,6 +6,7 @@ import yaml
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.serializers import serialize
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import pre_delete, pre_save, post_save
@@ -41,6 +42,7 @@ class Template(models.Model):
             help_text=_("The last time the local cache of the repository was updated"))
 
     _git = None
+    _metadata = {}
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.git_url)
@@ -88,6 +90,27 @@ class Template(models.Model):
             if tar_file:
                 os.remove(tar_file)
 
+    def get_metadata(self, project):
+        if project.id in self._metadata:
+            return self._metadata[project.id]
+
+        temp_dir = tempfile.mkdtemp()
+        self.archive_repository(temp_dir, "--", "stackstrap/meta.yml")
+
+        meta_file = os.path.join(temp_dir, "stackstrap", "meta.yml")
+        self.render_file(meta_file, {'project': project})
+
+        # read the meta file as load it as yaml
+        with open(meta_file) as f:
+            metadata = yaml.load(f)
+
+        # cleanup the temp directory
+        shutil.rmtree(temp_dir)
+
+        self._metadata[project.id] = metadata
+
+        return metadata
+
     def update_state_file(self, project):
         temp_dir = tempfile.mkdtemp()
         self.archive_repository(temp_dir, "--", "stackstrap/state.sls")
@@ -95,10 +118,42 @@ class Template(models.Model):
         shutil.rmtree(temp_dir)
 
     def update_pillar_file(self, project):
+        pillar_file = "/home/stackstrap/project_pillars/project-%d.sls" % project.id
+        pillar_data = {
+            'project': serialize("python", [project])[0]['fields']
+        }
+
         temp_dir = tempfile.mkdtemp()
         self.archive_repository(temp_dir, "--", "stackstrap/pillar.sls")
-        shutil.copy(os.path.join(temp_dir, "stackstrap", "pillar.sls"), "/home/stackstrap/project_pillars/project-%d.sls" % project.id)
+        temp_pillar_file = os.path.join(temp_dir, "stackstrap", "pillar.sls")
+        if os.path.isfile(temp_pillar_file):
+            shutil.copy(temp_pillar_file, "/home/stackstrap/project_pillars/project-%d.sls" % project.id)
+        else:
+            open(pillar_file, "w")
         shutil.rmtree(temp_dir)
+
+        with open(pillar_file, "a") as f:
+            f.write(yaml.safe_dump(pillar_data))
+
+    def render_file(self, filename, context, replace=True):
+        """
+        Renders the specified filename using the Django template engine
+
+        filename is the full path of the file to render
+        context is the context to use when rendering
+        replace if True the file will be rewritten as the same name, otherwise
+                it will return the data
+        """
+        with open(filename, 'r') as f:
+            t = Django_template(f.read())
+        file_contents = t.render(Context(context))
+
+        if replace:
+            with open(filename, 'w') as f:
+                f.write(file_contents)
+        else:
+            return file_contents
+
 
 @receiver(models.signals.post_save, sender=Template)
 def template_populate_cache(sender, instance, created, *args, **kwargs):
@@ -214,35 +269,21 @@ class Project(models.Model):
                 f.write("# Ignore local salt keys\n")
                 f.write("salt/keys/*.p[eu][mb]\n")
 
-            def render_template(source):
-                "closure to read a file, parse it as a Django template and re-write it"
-                with open(source, 'r') as f:
-                    t = Django_template(f.read())
-                file_contents = t.render(Context(context))
-
-                with open(source, 'w') as f:
-                    f.write(file_contents)
-
             # process the stackstrap meta data
-            pillar_file = z.path.join('stackstrap', 'pillar.sls')
-            if os.path.exists(pillar_file):
-                render_template(pillar_file)
+            metadata = self.template.get_metadata(self)
 
-                # get the stackstrap yaml from the Project Template
-                with open(pillar_file, 'r') as f:
-                    metadata = yaml.load(f).get("stackstrap", {})
+            # iterate the files to parse with Django templates
+            file_template_paths = metadata.get("file_templates", [])
+            file_template_paths.append("stackstrap/meta.yml")
+            for path in file_template_paths:
+                self.template.render_file(z.path.join(path), context)
 
-                # iterate the files to parse with Django templates
-                file_template_paths = metadata.get("file_templates", [])
-                for path in file_template_paths:
-                    render_template(z.path.join(path))
-
-                # iterate the paths to update with custom names
-                path_templates = metadata.get("path_templates", [])
-                for path_template in path_templates:
-                    for orig_path in path_template:
-                        os.rename(z.path.join(orig_path),
-                                  z.path.join(path_template[orig_path]))
+            # iterate the paths to update with custom names
+            path_templates = metadata.get("path_templates", [])
+            for path_template in path_templates:
+                for orig_path in path_template:
+                    os.rename(z.path.join(orig_path),
+                              z.path.join(path_template[orig_path]))
 
             return z.mkzip()
 
