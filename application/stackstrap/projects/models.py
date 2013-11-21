@@ -329,6 +329,12 @@ class Membership(models.Model):
             upload_to=lambda i, f: key_name(i, f, '.pem')
             )
 
+    def __unicode__(self):
+        return "%s - %s" % (
+            self.user,
+            self.project
+        )
+
     @property
     def minion_id(self):
         return 'user-%d-project-%d' % (
