@@ -20,29 +20,20 @@ templates with a lowercase 't'.
 
 Project Template meta-data
 --------------------------
-The meta-data for Project Templates is supplied as pillar & state data and
-describes the Project Template, which files should be treated as Django
-templates, which directories to transform and how state should be applied to
-systems using the Project Template.
+The meta-data for Project Templates is stored within a folder at the root of the
+project named ``stackstrap``. The folder contains 3 files which supply pillar
+& state data and describe the Project Template.
 
-The pillar data needs to specify some basic information about your Project
-Template but can be used to store any data you want to use in your states. The
-pillar data is passed through the Django template engine prior to being used,
-which is how the path_templates work for the filesystem transforms, so you can
-use any of the available context variables when defining your pillar data.
+meta.yml
+~~~~~~~~
+When loaing a Template into a Project, Stackstrap will take time to parse files
+and paths with the Django template engine. This allows you to seed your Template
+with project specific name spacing and other goodies like secrets.
 
-The state data should utilize the available states and macros that can be
-found in the `community repository`_.
-
-The meta-data should live in a directory named ``stackstrap``. The pillar data
-should live in a file named ``pillar.sls`` and the state data should live in a
-file named ``state.sls``.
-
-Base pillar data
-~~~~~~~~~~~~~~~~
-The pillar data should live inside a file named ``stackstrap/pillar.sls`` and
-should define a top-level name space of ``stackstrap`` with a minimum of the
-following fields:
+Defining your Template for Stackstrap
++++++++++++++++++++++++++++++++++++++
+Give StackStrap some information about your Template so that it can help you set 
+it up.
 
 * **`template_name`** - a short name to describe the Project Template
 * **`template_author`** - your name (formatted as "Full Name <email@address>")
@@ -50,17 +41,15 @@ following fields:
 
 Example::
 
-    stackstrap:
-      template_name: "Flask with Capistrano (nginx + uwsgi)"
-      template_author: "Brent Smyth <brent@fatbox.ca>"
-      template_description:
+    template_name: "Flask with Capistrano (nginx + uwsgi)"
+    template_author: "Brent Smyth <brent@fatbox.ca>"
+    template_description:
         This template contains a Flask app with Flask Script for managing it.
-
         It is deployed using nginx as the HTTP endpoint and uwsgi as the
         application server.
 
 Parsing files as Django templates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++
 To tell StackStrap that a file should be passed through the Django template
 engine when creating a project instance you need to define a list named
 ``file_templates`` inside the ``stackstrap`` name space containing the file
@@ -74,7 +63,7 @@ paths relative to the root of the project::
         - foundation/config.rb
 
 Transforming filesystem paths
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++
 To tell StackStrap that filesystem paths should be transformed based on the
 context data when creating a project instance you need to define a dictionary
 named ``path_templates`` inside the ``stackstrap`` name space containing the
@@ -94,15 +83,26 @@ path transformed specify the original path name in the ``file_templates``
 list and not the transformed one.
 
 Available context variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++
 When the pillar data and your templates are parsed the following variables are
 made available in the context:
 
 * **`project`** - the Project object. See the `Project source code` for all of
   the available attributes you can access on this object.
-* **`membership`** - the Membership object linking the user that is deploying
-  the code with the project. You can get at the user object via
-  ``membership.user``
+* **`master`** - the hostname of your master instace of StackStrap.
+* **`master_ip`** - the IP address of your master instance of Stackstrap.
+
+state.sls
+~~~~~~~~~
+The state data should utilize the available states and macros that can be
+found in the `community repository`_.
+
+pillar.sls
+~~~~~~~~~~
+Pillar data is meant to be configuration data for your Template that can be
+used in the state file.
+
+TODO: Document this better.
 
 
 .. _Django's template system: https://docs.djangoproject.com/en/dev/ref/templates/
