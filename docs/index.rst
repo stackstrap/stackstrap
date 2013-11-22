@@ -45,6 +45,7 @@ Contents
    deployment.rst
    templates.rst
    development.rst
+   usage.rst
 
 .. _Vagrant: http://vagrantup.com/
 .. _Salt: http://saltstack.com/
