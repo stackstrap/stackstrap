@@ -24,6 +24,8 @@ DATABASES = {
     }
 }
 
+PRIVATE_ROOT = '/home/stackstrap/domains/stackstrap-master/private'
+
 MEDIA_ROOT = '/home/stackstrap/domains/stackstrap-master/media'
 MEDIA_URL = '/media/'
 

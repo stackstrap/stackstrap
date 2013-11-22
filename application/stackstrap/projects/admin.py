@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 
-from .models import Project, Membership, Box, Template
+from .models import Project, Box, Template
 
 class TemplateAdmin(admin.ModelAdmin):
     list_display = ('name', 'git_url')
@@ -23,16 +23,11 @@ class TemplateAdmin(admin.ModelAdmin):
 class BoxAdmin(admin.ModelAdmin):
     list_display = ('name', 'url')
 
-class MembershipInline(admin.TabularInline):
-    model = Membership
-    readonly_fields = ('public_key', 'private_key')
-    extra = 0
-
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'short_name', '_members', 'box', 'template')
     list_filter = ('box', 'template')
     search_fields = ('name',)
-    inlines = (MembershipInline,)
+    readonly_fields = ('public_key', 'private_key')
 
     def _members(self, obj):
         return ", ".join([str(m) for m in obj.members.all()])
