@@ -260,7 +260,7 @@ permissive_pki_access: True
 file_roots:
   base:
     - /home/stackstrap/current/salt/roots/salt
-    - /home/stackstrap/project_states
+    - /home/stackstrap/private/project_states
 
 # The hash_type is the hash to use when discovering the hash of a file on
 # the master server. The default is md5, but sha1, sha224, sha256, sha384
@@ -340,7 +340,7 @@ file_roots:
 pillar_roots:
   base:
     - /home/stackstrap/current/salt/roots/pillar
-    - /home/stackstrap/project_pillars
+    - /home/stackstrap/private/project_pillars
 
 #ext_pillar:
 #  - hiera: /etc/hiera.yaml
