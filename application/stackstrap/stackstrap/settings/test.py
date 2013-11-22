@@ -24,8 +24,9 @@ def rm_fr(path):
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/tmp/stackstrap_tests.sqlite3'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'test_stackstrap',
+        'USER': 'postgres'
     }
 }
 
