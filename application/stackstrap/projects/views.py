@@ -6,7 +6,7 @@ from django.views.generic import View
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 
-from .models import Project, Membership
+from .models import Project
 
 class LoginRequiredMixin(object):
     @method_decorator(login_required)
@@ -19,15 +19,14 @@ class ProjectsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """
-        Return only projects the current user is a member of
+        Return our projects
         """
-        return Project.objects.filter(membership__user=self.request.user)
+        return Project.objects.all()
 
 class ProjectDownloadView(LoginRequiredMixin, View):
     def get(self, request, project_id):
         # look up the project & membership
         self.project = get_object_or_404(Project, id=project_id)
-        self.membership = get_object_or_404(Membership, project=self.project, user=request.user)
 
         # return our response
         return self.get_response()
@@ -37,15 +36,6 @@ class ProjectDownloadView(LoginRequiredMixin, View):
 
 class ZipDownload(ProjectDownloadView):
     def get_response(self):
-        resp = HttpResponse(self.project.make_project_zip(self.membership), mimetype = "application/x-zip-compressed")
+        resp = HttpResponse(self.project.make_project_zip(), mimetype = "application/x-zip-compressed")
         resp['Content-Disposition'] = 'attachment; filename=StackStrap_%d-%s.zip' % (self.project.id, self.project.name)
-        return resp
-
-class KeyDownload(ProjectDownloadView):
-    def get_response(self):
-        resp = HttpResponse(self.project.make_keys_zip(self.membership), mimetype = "application/x-zip-compressed")
-        resp['Content-Disposition'] = 'attachment; filename=StackStrap-Keys_%s-%d-%s.zip' % (
-                self.membership.user.email,
-                self.project.id,
-                self.project.name)
         return resp
