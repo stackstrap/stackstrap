@@ -6,10 +6,11 @@ import yaml
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models.signals import pre_delete, pre_save, post_save
+from django.db.models.signals import post_delete, pre_save, post_save
 from django.dispatch import receiver
 from django.template import Template as Django_template, Context
 from django.template.loader import render_to_string
@@ -18,6 +19,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from utils.ip import interface_ip
 from utils.zip import ZipCreator
+
+private_storage = FileSystemStorage(location=settings.PRIVATE_ROOT)
 
 class Template(models.Model):
     """
@@ -57,7 +60,7 @@ class Template(models.Model):
 
     @property
     def local_repository_dir(self):
-        return os.path.join(settings.MEDIA_ROOT, "template_repository_cache", str(self.id))
+        return os.path.join(settings.PRIVATE_ROOT, "template_repository_cache", str(self.id))
 
     def create_local_repository(self):
         if os.path.exists(self.local_repository_dir):
@@ -112,13 +115,22 @@ class Template(models.Model):
         return metadata
 
     def update_state_file(self, project):
+        state_file = os.path.join(
+            settings.PRIVATE_ROOT,
+            "project_states",
+            "project-%d.sls" % project.id
+        )
         temp_dir = tempfile.mkdtemp()
         self.archive_repository(temp_dir, "--", "stackstrap/state.sls")
-        shutil.copy(os.path.join(temp_dir, "stackstrap", "state.sls"), "/home/stackstrap/project_states/project-%d.sls" % project.id)
+        shutil.copy(os.path.join(temp_dir, "stackstrap", "state.sls"), state_file)
         shutil.rmtree(temp_dir)
 
     def update_pillar_file(self, project):
-        pillar_file = "/home/stackstrap/project_pillars/project-%d.sls" % project.id
+        pillar_file = os.path.join(
+            settings.PRIVATE_ROOT,
+            "project_pillars",
+            "project-%d.sls" % project.id
+        )
         pillar_data = {
             'project': serialize("python", [project])[0]['fields']
         }
@@ -127,7 +139,7 @@ class Template(models.Model):
         self.archive_repository(temp_dir, "--", "stackstrap/pillar.sls")
         temp_pillar_file = os.path.join(temp_dir, "stackstrap", "pillar.sls")
         if os.path.isfile(temp_pillar_file):
-            shutil.copy(temp_pillar_file, "/home/stackstrap/project_pillars/project-%d.sls" % project.id)
+            shutil.copy(temp_pillar_file, pillar_file)
         else:
             open(pillar_file, "w")
         shutil.rmtree(temp_dir)
@@ -191,6 +203,13 @@ class Box(models.Model):
         return "%s (%s)" % (self.name, self.url)
 
 
+def key_name(instance, filename, extension):
+    """
+    Callable for the upload_to parameter of our key files
+    """
+    return os.path.join('keypairs',
+                        'project-%d%s' % (instance.id, extension))
+
 class Project(models.Model):
     """
     The model that holds our Project data
@@ -223,15 +242,40 @@ class Project(models.Model):
             null=True,
             help_text=_("The template this project should use"))
 
-    members = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
-            through='Membership'
+    public_key = models.FileField(
+            upload_to=lambda i, f: key_name(i, f, '.pub'),
+            storage=private_storage
+            )
+
+    private_key = models.FileField(
+            upload_to=lambda i, f: key_name(i, f, '.pem'),
+            storage=private_storage
             )
 
     def __unicode__(self):
         return self.name
 
-    def make_project_zip(self, membership):
+    @property
+    def minion_id(self):
+        return 'project-%d' % self.id
+
+    @property
+    def installed_public_key_filename(self):
+        return os.path.join(
+            settings.SALT_PKI_ROOT,
+            "master",
+            "minions",
+            self.minion_id
+        )
+
+    def install_public_key(self):
+        shutil.copy(self.public_key.file.name, self.installed_public_key_filename)
+
+    def remove_public_key(self):
+        if os.path.exists(self.installed_public_key_filename):
+            os.remove(self.installed_public_key_filename)
+
+    def make_project_zip(self):
         with ZipCreator() as z:
             if self.template:
                 self.template.archive_repository(z.temp_dir)
@@ -242,10 +286,16 @@ class Project(models.Model):
             # build our context
             context = {
                     'project': self,
-                    'membership': membership,
                     'master': settings.MASTER_HOSTNAME,
                     'master_ip': interface_ip(settings.MASTER_INTERFACE)
                     }
+
+            # add our keys
+            with open(z.path.join('minion.pem'), 'w') as f:
+                f.write(self.private_key.read())
+
+            with open(z.path.join('minion.pub'), 'w') as f:
+                f.write(self.public_key.read())
 
             # render our project template files that exist within the project app
             with open(z.path.join('Vagrantfile'), 'w') as f:
@@ -253,21 +303,6 @@ class Project(models.Model):
 
             with open(z.path.join('salt', 'minion'), 'w') as f:
                 f.write(render_to_string('projects/salt.minion', context))
-
-            # put a file in place so our keys dir will exist in the zip and will
-            # explain what the dir is and where to get the keys
-            with open(z.path.join('salt', 'keys', 'README'), 'w') as f:
-                f.write("You need to place **your** specific salt keys in this directory\n")
-                f.write("Keys can be obtained from: http://%s/\n" % settings.MASTER_HOSTNAME)
-                f.write("The .zip file you download should be extracted in this directory.\n")
-                f.write("When complete you should have a minion.pub & minion.pem file in this directory\n")
-
-            # make sure the salt keys are ignored in git repositories
-            # we use append mode here so that we don't clobber an existing
-            # .gitignore file
-            with open(z.path.join('.gitignore'), 'a') as f:
-                f.write("# Ignore local salt keys\n")
-                f.write("salt/keys/*.p[eu][mb]\n")
 
             # process the stackstrap meta data
             metadata = self.template.get_metadata(self)
@@ -287,73 +322,13 @@ class Project(models.Model):
 
             return z.mkzip()
 
-    def make_keys_zip(self, membership):
-        with ZipCreator() as z:
-            with open(z.path.join('minion.pem'), 'w') as f:
-                f.write(membership.private_key.read())
-
-            with open(z.path.join('minion.pub'), 'w') as f:
-                f.write(membership.public_key.read())
-
-            return z.mkzip()
 
 @receiver(models.signals.post_save, sender=Project)
 def update_project_state_files(sender, instance, created, *args, **kwargs):
     instance.template.update_state_file(instance)
     instance.template.update_pillar_file(instance)
 
-def key_name(instance, filename, extension):
-    """
-    Callable for the upload_to parameter of our membership files
-    """
-    return os.path.join('public_keys',
-                        'project-%d' % instance.project.id,
-                        "%s%s" % (
-                            instance.user.email,
-                            extension)
-                        )
-
-class Membership(models.Model):
-    """
-    Our through model for relating users and projects.
-
-    It's primary purpose is to associate keys with the user + project combo
-    """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    project = models.ForeignKey(Project)
-
-    public_key = models.FileField(
-            upload_to=lambda i, f: key_name(i, f, '.pub')
-            )
-    private_key = models.FileField(
-            upload_to=lambda i, f: key_name(i, f, '.pem')
-            )
-
-    def __unicode__(self):
-        return "%s - %s" % (
-            self.user,
-            self.project
-        )
-
-    @property
-    def minion_id(self):
-        return 'user-%d-project-%d' % (
-                self.user.id,
-                self.project.id
-                )
-
-    @property
-    def installed_public_key_filename(self):
-        return "/etc/salt/pki/master/minions/%s" % self.minion_id
-
-    def install_public_key(self):
-        shutil.copy(self.public_key.file.name, self.installed_public_key_filename)
-
-    def remove_public_key(self):
-        if os.path.exists(self.installed_public_key_filename):
-            os.remove(self.installed_public_key_filename)
-
-@receiver(pre_save, sender=Membership)
+@receiver(post_save, sender=Project)
 def generate_keys(sender, instance, raw, *args, **kwargs):
     """
     If our public or private key is not set then auto generate them
@@ -388,11 +363,13 @@ def generate_keys(sender, instance, raw, *args, **kwargs):
             if public_file:
                 os.remove(public_file)
 
+            instance.save()
 
-@receiver(post_save, sender=Membership)
+
+@receiver(post_save, sender=Project)
 def install_public_key(sender, instance, created, raw, *args, **kwargs):
     instance.install_public_key()
 
-@receiver(pre_delete, sender=Membership)
-def remove_member_public_key(sender, instance, *args, **kwargs):
+@receiver(post_delete, sender=Project)
+def remove_public_key(sender, instance, *args, **kwargs):
     instance.remove_public_key()
