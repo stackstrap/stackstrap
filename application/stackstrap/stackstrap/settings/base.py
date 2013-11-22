@@ -7,6 +7,13 @@ _ = gettext = lambda s: s
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 project_dir = lambda *args: join(PROJECT_ROOT, *args)
 
+# Where the Salt PKI dir is
+SALT_PKI_ROOT = '/etc/salt/pki/'
+
+# Where to store our "private" files (keys, states & pillars)
+# This should be set in your environment specific configuration
+PRIVATE_ROOT = ''
+
 # The master interface is the interface which salt & stackstrap should be
 # addressed at, by default it is eth0, which should suit most deployments
 MASTER_INTERFACE = 'eth0'
