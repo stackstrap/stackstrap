@@ -81,12 +81,15 @@ class ProjectTests(ProjectTestCase):
 
         # ensure it's a valid zip file
         zip_io = StringIO(resp.content)
-        with zipfile.ZipFile(zip_io, "r") as z:
-            # valid yaml
-            meta = yaml.load(z.read('stackstrap/meta.yml'))
+        z = zipfile.ZipFile(zip_io, "r")
 
-            # ensure the file system transforms happened
-            dev = z.read('peanutbutter/peanutbutter/settings/dev.py')
+        # valid yaml
+        meta = yaml.load(z.read('stackstrap/meta.yml'))
 
-            # and it contains the correct content
-            self.assertEqual(str(dev).count("'NAME': 'peanutbutter'"), 1)
+        # ensure the file system transforms happened
+        dev = z.read('peanutbutter/peanutbutter/settings/dev.py')
+
+        # and it contains the correct content
+        self.assertEqual(str(dev).count("'NAME': 'peanutbutter'"), 1)
+
+        z.close()
