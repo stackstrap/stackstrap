@@ -10,7 +10,7 @@ python:
 env:
   global:
     - PYTHONPATH=$TRAVIS_BUILD_DIR/application/stackstrap
-    - DJANGO_SETTINGS_MODULE=stackstrap.settings.test
+    - DJANGO_SETTINGS_MODULE=stackstrap.settings.travisci
 
 install: "pip install --use-mirrors -r application/requirements/prod.txt"
 
