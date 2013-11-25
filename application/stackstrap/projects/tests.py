@@ -92,4 +92,10 @@ class ProjectTests(ProjectTestCase):
         # and it contains the correct content
         self.assertEqual(str(dev).count("'NAME': 'peanutbutter'"), 1)
 
+        # check the salt keys & minion file
+        pub = z.read('salt/keys/minion.pub')
+        pem = z.read('salt/keys/minion.pem')
+        minion = z.read('salt/minion')
+        self.assertEqual(str(minion).count('id: project-%d' % self.project.id), 1)
+
         z.close()
