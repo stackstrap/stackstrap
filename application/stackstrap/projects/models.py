@@ -291,18 +291,19 @@ class Project(models.Model):
                     }
 
             # add our keys
-            with open(z.path.join('minion.pem'), 'w') as f:
+            with open(z.path.join('salt', 'keys', 'minion.pem'), 'w') as f:
                 f.write(self.private_key.read())
 
-            with open(z.path.join('minion.pub'), 'w') as f:
+            with open(z.path.join('salt', 'keys', 'minion.pub'), 'w') as f:
                 f.write(self.public_key.read())
+
+            # and minion file
+            with open(z.path.join('salt', 'minion'), 'w') as f:
+                f.write(render_to_string('projects/salt.minion', context))
 
             # render our project template files that exist within the project app
             with open(z.path.join('Vagrantfile'), 'w') as f:
                 f.write(render_to_string('projects/Vagrantfile', context))
-
-            with open(z.path.join('salt', 'minion'), 'w') as f:
-                f.write(render_to_string('projects/salt.minion', context))
 
             # process the stackstrap meta data
             metadata = self.template.get_metadata(self)
