@@ -60,7 +60,6 @@ deployment is a fairly straight forward task.
     $ export DJANGO_SETTINGS_MODULE=stackstrap.settings.prod
     $ django-admin.py syncdb --migrate
     $ django-admin.py collectstatic
-    $ supervisorctl start stackstrap
 
 #. Profit
 
