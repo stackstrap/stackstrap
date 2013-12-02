@@ -77,6 +77,7 @@ settings as their defaults::
     grains:
       stackstrap:
         mode: 'prod'
+        http_server_name: 'stackstrap-master.yourdomain.com'
 
 Any time this configuration is updated you should re-apply the state via salt
 to ensure the system is configured correctly::
