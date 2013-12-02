@@ -190,7 +190,7 @@ class Box(models.Model):
     """
     name = models.CharField(
             max_length=128,
-            help_text=_("The name of this box for use by Vagrant (ie. precise32)")
+            help_text=_("The name of this box for use by Vagrant (ie. precise32)"))
 
     url = models.URLField(
             max_length=255,
