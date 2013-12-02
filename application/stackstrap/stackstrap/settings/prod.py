@@ -24,12 +24,12 @@ DATABASES = {
     }
 }
 
-PRIVATE_ROOT = '/home/stackstrap/domains/stackstrap-master/private'
+PRIVATE_ROOT = '/home/stackstrap/private'
 
-MEDIA_ROOT = '/home/stackstrap/domains/stackstrap-master/media'
+MEDIA_ROOT = '/home/stackstrap/media'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = '/home/stackstrap/domains/stackstrap-master/static'
+STATIC_ROOT = '/home/stackstrap/static'
 STATIC_URL = '/static/'
 
 LOGGING = {
