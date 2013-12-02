@@ -15,7 +15,6 @@
         <dd>{{ project.box }}</dd>
     </dl>
 
-    <a href="{% url 'project_keys' project.id %}">Download <strong>your</strong> project keys</a><br>
     <a href="{% url 'project_zip' project.id %}">Download project zip file</a>
 </div>
 {% endfor %}
