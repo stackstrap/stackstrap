@@ -7,6 +7,12 @@ and its derivatives (Ubuntu, etc).
 Like all systems managed by the master, it itself is configured by itself so
 deployment is a fairly straight forward task.
 
+.. highlights::
+
+   Keep in mind: ``saltstack`` will need ports 4505 and 4506 to be open. If using a
+   service like AWS you will need to include them in your security profile.
+
+
 #. Install the base OS, pick a hostname that starts with ``stackstrap-master``,
    ie. ``stackstrap-master.yourdomain.com``. The hostname should also resolve
    without the domain name, ie. ``ping stackstrap-master`` works
