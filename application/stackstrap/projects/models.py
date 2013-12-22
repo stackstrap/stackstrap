@@ -220,9 +220,9 @@ class Project(models.Model):
             )
 
     short_name = models.CharField(
-            max_length=64,
-            help_text=_("A URL and file system safe versAion of the name [a-z0-9_]"),
-            validators=[RegexValidator(r'[a-z0-9_\.]+')]
+            max_length=16,
+            help_text=_("A URL and file system safe version of the name [a-z0-9]"),
+            validators=[RegexValidator(r'[a-z0-9]+')]
             )
 
     description = models.TextField(
