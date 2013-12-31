@@ -14,6 +14,7 @@ else:
     raise RuntimeError("Unable to load version")
 
 requirements=[
+    'PyYAML==3.10'
     'Jinja2>=2.7,<=2.8',
     'sh>=1.0,<=1.1'
 ]
