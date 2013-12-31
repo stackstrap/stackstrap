@@ -20,3 +20,7 @@ salt/keys/*.pub
 # RVM/Gemfile Stuff
 .ruby-version
 .ruby-gemset
+
+# python dist files
+dist/*
+*.egg-info/
