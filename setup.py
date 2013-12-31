@@ -23,7 +23,7 @@ if sys.version_info < (2, 7):
 setup(
     name='stackstrap',
     packages=['stackstrap'],
-    scripts=['scripts/strackstrap'],
+    scripts=['scripts/strackstrap', 'scripts/loose_ssh.sh'],
     include_package_data=True,
     version=version,
     license="Apache License, Version 2.0",

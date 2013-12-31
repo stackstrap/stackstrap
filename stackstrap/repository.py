@@ -1,5 +1,4 @@
 import errno
-import inspect
 import logging
 import os
 import sh
@@ -23,7 +22,7 @@ class Repository(object):
     def git(self):
         if not self._git:
             self._git = sh.git.bake(_cwd=self.path, _env={
-                'GIT_SSH': self.loose_ssh
+                'GIT_SSH': "loose_ssh.sh"
             })
         return self._git
 
@@ -38,11 +37,6 @@ class Repository(object):
                 c if c.isalnum() else '-'
                 for c in url
             ])
-        )
-
-        self.loose_ssh = os.path.join(
-            os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))),
-            "loose_ssh.sh"
         )
 
         if os.path.exists(self.path):
