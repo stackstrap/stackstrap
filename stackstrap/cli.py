@@ -11,29 +11,21 @@ class StackStrapCLI(object):
     """
 
     def __init__(self):
-        self.log = logging.getLogger(__name__)
-
         self.parser = argparse.ArgumentParser(
             description='Making development with Vagrant + Salt suck less'
         )
 
         self.subparsers = self.parser.add_subparsers(
             title='commands',
-            description='available commands',
-            help=''
+            description='',
+            help='',
+            dest='command'
         )
 
         self.parser.add_argument(
             '-V', '--version',
             action='version',
             version=__version__
-        )
-
-        self.parser.add_argument(
-            '-v', '--verbose',
-            action='store_true',
-            dest='verbose',
-            help='more verbose output'
         )
 
         self.parser.add_argument(
@@ -54,9 +46,29 @@ class StackStrapCLI(object):
         self.add_command(Create())
 
     def add_command(self, command):
-        command.register_parsers(self.subparsers)
+        parser = self.subparsers.add_parser(
+            command.name,
+            help=command.__doc__
+        )
+        command.setup_parser(parser)
 
         self.commands[command.name] = command
 
     def main(self):
         args = self.parser.parse_args()
+
+        log_level = logging.INFO
+        log_format = '%(message)s'
+        if args.quiet:
+            log_level = logging.WARN
+        elif args.debug:
+            log_level = logging.DEBUG
+            log_format = '%(asctime)s - %(name)s - %(message)s'
+
+        logging.basicConfig(level=log_level, format=log_format)
+        self.log = logging.getLogger("main")
+
+        self.log.debug("StackStrap starting up")
+        self.log.debug("Command: %s" % args.command)
+
+        self.commands[args.command].main(args)
