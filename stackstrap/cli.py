@@ -1,9 +1,9 @@
 import argparse
 import logging
 
-from .commands.create import Create
+from stackstrap.commands.create import Create
 
-from . import __version__
+from stackstrap import __version__
 
 class StackStrapCLI(object):
     """
