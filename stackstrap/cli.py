@@ -63,7 +63,7 @@ class StackStrapCLI(object):
             log_level = logging.WARN
         elif args.debug:
             log_level = logging.DEBUG
-            log_format = '%(asctime)s - %(name)s - %(message)s'
+            log_format = '[%(asctime)s] %(name)s - %(levelname)s: %(message)s'
 
         logging.basicConfig(level=log_level, format=log_format)
         self.log = logging.getLogger("main")
