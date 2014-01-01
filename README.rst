@@ -1,7 +1,7 @@
 StackStrap
 ==========
 
-An awesome tool that uses vagrant + salt to make development suck less.
+Making development more awesome.
 
 .. image:: https://travis-ci.org/fatbox/stackstrap.png?branch=master
            :target: https://travis-ci.org/fatbox/stackstrap
