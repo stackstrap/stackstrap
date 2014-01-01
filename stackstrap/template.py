@@ -2,9 +2,10 @@ import random
 import string
 
 from jinja2 import Template, Environment, \
-                   ChoiceLoader, FileSystemLoader, PackageLoader
+                   ChoiceLoader, FileSystemLoader
 
 def random_secret(length=96):
+    "Generates a long, random string to be used as secret keys in applications"
     pool = string.ascii_letters + string.digits
     return "".join([
         random.choice(pool)
@@ -14,10 +15,9 @@ def random_secret(length=96):
 class Template(object):
     def __init__(self, file_loader_paths=[], globals={}):
         loaders = [
-            PackageLoader('stackstrap', 'templates'),
+            FileSystemLoader(path)
+            for path in file_loader_paths
         ]
-        for path in file_loader_paths:
-            loaders.append(FileSystemLoader(path))
 
         self.env = Environment(
             loader=ChoiceLoader(loaders),
