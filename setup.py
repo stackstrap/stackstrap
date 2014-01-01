@@ -28,7 +28,7 @@ setup(
     include_package_data=True,
     version=version,
     license="Apache License, Version 2.0",
-    description='An awesome tool that uses vagrant + salt to make development suck less',
+    description='A tool that uses vagrant + salt to make development more awesome',
     long_description=open('README.rst').read(),
     author='Evan Borgstrom',
     author_email='evan@borgstrom.ca',

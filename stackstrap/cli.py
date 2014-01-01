@@ -12,7 +12,7 @@ class StackStrapCLI(object):
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(
-            description='Making development with Vagrant + Salt suck less'
+            description='Making development with Vagrant + Salt more awesome'
         )
 
         self.subparsers = self.parser.add_subparsers(

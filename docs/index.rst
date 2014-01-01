@@ -1,7 +1,7 @@
 StackStrap documentation
 ========================
 
-An awesome tool that uses vagrant + salt to make development suck less.
+A tool that uses vagrant + salt to make development more awesome.
 
 Overview
 --------
