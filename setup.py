@@ -14,7 +14,7 @@ else:
     raise RuntimeError("Unable to load version")
 
 requirements=[
-    'PyYAML==3.10'
+    'PyYAML==3.10',
     'Jinja2>=2.7,<=2.8',
     'sh>=1.0,<=1.1'
 ]
@@ -24,7 +24,7 @@ if sys.version_info < (2, 7):
 setup(
     name='stackstrap',
     packages=['stackstrap'],
-    scripts=['scripts/strackstrap', 'scripts/loose_ssh.sh'],
+    scripts=['scripts/stackstrap', 'scripts/loose_ssh.sh'],
     include_package_data=True,
     version=version,
     license="Apache License, Version 2.0",
