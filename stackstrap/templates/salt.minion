@@ -1,9 +1,0 @@
-state_verbose: False
-file_client: local
-fileserver_backend:
-  - roots
-  - git
-file_roots:
-  - /project/salt/root
-gitfs_remotes:
-  - https://github.com/fatbox/stackstrap-salt.git
