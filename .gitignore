@@ -23,4 +23,5 @@ salt/keys/*.pub
 
 # python dist files
 dist/*
+build/*
 *.egg-info/
