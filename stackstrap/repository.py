@@ -26,7 +26,7 @@ class Repository(object):
             })
         return self._git
 
-    def __init__(self, url):
+    def __init__(self, url, nopull=False):
         self.url = url
         self.log = logging.getLogger("repository")
 
@@ -40,9 +40,12 @@ class Repository(object):
         )
 
         if os.path.exists(self.path):
-            self.log.debug("Repository already exists in our cache, pulling from origin...")
-            self.git('pull', 'origin')
-            self.git('submodule', 'update')
+            if nopull:
+                self.log.debug("Skipping pull")
+            else:
+                self.log.debug("Repository already exists in our cache, pulling from origin...")
+                self.git('pull', 'origin')
+                self.git('submodule', 'update')
         else:
             self.log.debug("Creating a new copy of the repository in our cache, cloning...")
             mkdir_p(self.path)
