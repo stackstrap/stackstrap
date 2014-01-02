@@ -67,7 +67,7 @@ class Project(object):
         self.log.debug("Copying project template into place...")
 
         base_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        template_dir = os.path.abspath(os.path.join(base_dir, "..", "project_template"))
+        template_dir = os.path.abspath(os.path.join(base_dir, "project_template"))
         self.log.debug("Processing: {0}".format(template_dir))
 
         for root, folders, files in os.walk(template_dir):
