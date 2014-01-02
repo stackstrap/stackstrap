@@ -6,7 +6,7 @@ python:
 
 install: pip install --use-mirrors nose
 
-script: nosetests
+script: python setup.py nosetests
 
 notifications:
   hipchat:
