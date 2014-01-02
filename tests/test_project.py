@@ -2,12 +2,17 @@ import os
 import shutil
 import tempfile
 
+from nose import with_setup
+
 from stackstrap.project import Project
 from stackstrap.repository import Repository
+
+from . import setup_repositories, restore_repositories
 
 # setup our repo & cache urls & dirs
 repo_url = 'file://{0}/test_template/'.format(os.path.dirname(__file__))
 
+@with_setup(setup_repositories, restore_repositories)
 def test_project_creation():
     orig_dir = os.getcwd()
     tmp_dir = tempfile.mkdtemp()

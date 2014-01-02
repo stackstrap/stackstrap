@@ -1,8 +1,13 @@
 import os
+import sh
 import shutil
 import tempfile
 
+from nose import with_setup
+
 from stackstrap.repository import Repository
+
+from . import setup_repositories, restore_repositories
 
 # setup our repo & cache urls & dirs
 repo_url = 'file://{0}/test_repo/'.format(os.path.dirname(__file__))
@@ -10,9 +15,12 @@ repo_cache_name = ''.join([
     c if c.isalnum() else '-'
     for c in repo_url
 ])
+
 cache_dir = os.path.expanduser('~/.stackstrap/repository_cache')
 repo_cache_dir = os.path.join(cache_dir, repo_cache_name)
 
+
+@with_setup(setup_repositories, restore_repositories)
 def test_repository_creation():
     """
     Ensure our repository creation sets up the cache dir correctly and that
@@ -26,6 +34,10 @@ def test_repository_creation():
     assert os.path.isdir(repo_cache_dir)
     assert os.path.isfile(os.path.join(repo_cache_dir, "README"))
 
+    shutil.rmtree(repo_cache_dir)
+
+
+@with_setup(setup_repositories, restore_repositories)
 def test_repository_cache_dir():
     """
     Ensure creation works when we specify a different cache_dir
@@ -39,6 +51,8 @@ def test_repository_cache_dir():
 
     shutil.rmtree(cache_dir)
 
+
+@with_setup(setup_repositories, restore_repositories)
 def test_repository_archiving():
     """
     Ensure our archive is created properly
