@@ -1,24 +1,12 @@
 language: python
 
-services:
-  - postgresql
-
 python:
   - '2.6'
   - '2.7'
 
-env:
-  global:
-    - PYTHONPATH=$TRAVIS_BUILD_DIR/application/stackstrap
-    - DJANGO_SETTINGS_MODULE=stackstrap.settings.travisci
+install: pip install --use-mirrors nose
 
-install: 'pip install --use-mirrors -r application/requirements/prod.txt'
-
-before_script:
-  - psql -c 'create database test_stackstrap;' -U postgres
-  - /sbin/ifconfig -a
-
-script: 'django-admin.py test projects'
+script: nosetests
 
 notifications:
   hipchat:

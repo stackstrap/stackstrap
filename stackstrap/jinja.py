@@ -12,7 +12,10 @@ def random_secret(length=96):
         for x in xrange(length)
         ])
 
-class Template(object):
+class JinjaInterface(object):
+    """
+    An interface to render files & strings using Jinja2
+    """
     def __init__(self, file_loader_paths=[], globals={}):
         loaders = [
             FileSystemLoader(path)
@@ -29,7 +32,7 @@ class Template(object):
 
         self.env.globals = globals
 
-    def render(self, name, context={}):
+    def render_file(self, name, context={}):
         template = self.env.get_template(name)
         return template.render(**context)
 

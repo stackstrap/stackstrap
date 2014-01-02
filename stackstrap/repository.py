@@ -26,13 +26,15 @@ class Repository(object):
             })
         return self._git
 
-    def __init__(self, url, nopull=False):
+    def __init__(self, url, nopull=False, cache_dir=None):
         self.url = url
         self.log = logging.getLogger("repository")
 
-        self.repo_cache = os.path.expanduser('~/.stackstrap/repository_cache/')
+        if cache_dir is None:
+            cache_dir = os.path.expanduser('~/.stackstrap/repository_cache/')
+
         self.path = os.path.join(
-            self.repo_cache,
+            cache_dir,
             "".join([
                 c if c.isalnum() else '-'
                 for c in url
