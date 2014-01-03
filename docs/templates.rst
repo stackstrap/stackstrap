@@ -1,11 +1,11 @@
+.. _templates:
 Project Templates
 =================
-
 Project Templates are GIT repositories that contain a base layout for a project
 and are coupled with pillar & state data that Salt uses to provision the
 project.
 
-The files inside the template can be parsed as Django templates, by marking
+The files inside the template can be parsed as Jinja templates, by marking
 them to be parsed in the meta-data, if you need any of your files to be 
 updated (which you pretty much always do).
 
@@ -13,22 +13,28 @@ You can also apply the same template logic to path names so that you can apply
 transformations to the filesystem to ensure that best practicies for naming
 and consistency are applied.
 
-The fact that we have Project Templates and Django has a template engine that
+The fact that we have Project Templates and Jinja has a template engine that
 we use for files can become confusing. To help with the confusion we will
-always refer to our Project Templates with uppercase letters and to Django
+always refer to our Project Templates with uppercase letters and to Jinja
 templates with a lowercase 't'.
+
 
 Project Template meta-data
 --------------------------
-The meta-data for Project Templates is stored within a folder at the root of the
-project named ``stackstrap``. The folder contains 3 files which supply pillar
-& state data and describe the Project Template.
+The meta-data for Project Templates is stored within a folder at the root of
+the project named ``stackstrap``. The folder contains 3 files which supply
+pillar & state data and describe the Project Template.
+
+This directory only exists in the Template itsef and is not present in the
+projects that are generated.
+
 
 meta.yml
 ~~~~~~~~
 When loaing a Template into a Project, Stackstrap will take time to parse files
-and paths with the Django template engine. This allows you to seed your Template
+and paths with the Jinja template engine. This allows you to seed your Template
 with project specific name spacing and other goodies like secrets.
+
 
 Defining your Template for Stackstrap
 +++++++++++++++++++++++++++++++++++++
@@ -48,9 +54,10 @@ Example::
         It is deployed using nginx as the HTTP endpoint and uwsgi as the
         application server.
 
-Parsing files as Django templates
+
+Parsing files as Jinja templates
 +++++++++++++++++++++++++++++++++
-To tell StackStrap that a file should be passed through the Django template
+To tell StackStrap that a file should be passed through the Jinja template
 engine when creating a project instance you need to define a list named
 ``file_templates`` inside the ``stackstrap`` name space containing the file
 paths relative to the root of the project::
@@ -61,6 +68,7 @@ paths relative to the root of the project::
         - deployment/deploy.rb
         - deployment/js_compress.json
         - foundation/config.rb
+
 
 Transforming filesystem paths
 +++++++++++++++++++++++++++++
@@ -82,6 +90,7 @@ specifying a file to both be treated as a template and have its filesystem
 path transformed specify the original path name in the ``file_templates``
 list and not the transformed one.
 
+
 Available context variables
 +++++++++++++++++++++++++++
 When the pillar data and your templates are parsed the following variables are
@@ -92,10 +101,12 @@ made available in the context:
 * **`master`** - the hostname of your master instace of StackStrap.
 * **`master_ip`** - the IP address of your master instance of Stackstrap.
 
+
 state.sls
 ~~~~~~~~~
 The state data should utilize the available states and macros that can be
 found in the `community repository`_.
+
 
 pillar.sls
 ~~~~~~~~~~
@@ -105,7 +116,7 @@ used in the state file.
 TODO: Document this better.
 
 
-.. _Django's template system: https://docs.djangoproject.com/en/dev/ref/templates/
+.. _Jinja: http://jinja.pocoo.org/docs/
 .. _community repository: https://github.com/fatbox/stackstrap-salt
 .. _Project source code: https://github.com/fatbox/stackstrap/blob/master/application/stackstrap/projects/models.py
 

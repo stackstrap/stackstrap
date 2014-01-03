@@ -1,0 +1,70 @@
+import errno
+import logging
+import os
+import sh
+import tempfile
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path, 0755)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+class Repository(object):
+    "Represents a GIT Repository and allows for easy operations"
+
+    _git = None
+
+    @property
+    def git(self):
+        if not self._git:
+            self._git = sh.git.bake(_cwd=self.path, _env={
+                'GIT_SSH': "loose_ssh.sh"
+            })
+        return self._git
+
+    def __init__(self, url, nopull=False, cache_dir=None):
+        self.url = url
+        self.log = logging.getLogger("repository")
+
+        if cache_dir is None:
+            cache_dir = os.path.expanduser('~/.stackstrap/repository_cache/')
+
+        self.path = os.path.join(
+            cache_dir,
+            "".join([
+                c if c.isalnum() else '-'
+                for c in url
+            ])
+        )
+
+        if os.path.exists(self.path):
+            if nopull:
+                self.log.debug("Skipping pull")
+            else:
+                self.log.debug("Repository already exists in our cache, pulling from origin...")
+                self.git('pull', 'origin')
+                self.git('submodule', 'update')
+        else:
+            self.log.debug("Creating a new copy of the repository in our cache, cloning...")
+            mkdir_p(self.path)
+            self.git('clone', '--recurse-submodules', url, '.')
+
+    def archive_to(self, git_ref, destination, *archive_args):
+        self.log.debug("Archiving '{ref}' to {destination}".format(
+            ref=git_ref,
+            destination=destination
+        ))
+
+        try:
+            mkdir_p(destination)
+
+            (fd, tar_file) = tempfile.mkstemp()
+            self.git.archive("remotes/origin/%s" % git_ref, *archive_args, _out=tar_file)
+            sh.tar("xf", tar_file, _cwd=destination)
+        finally:
+            if tar_file:
+                os.remove(tar_file)

@@ -1,10 +1,6 @@
 # vagrant
 .vagrant/
 
-# do not track the key files needed for provisioning
-salt/keys/*.pem
-salt/keys/*.pub
-
 # pycharm
 .idea/
 
@@ -20,3 +16,12 @@ salt/keys/*.pub
 # RVM/Gemfile Stuff
 .ruby-version
 .ruby-gemset
+
+# python dist files
+dist/*
+build/*
+*.egg-info/
+
+# testing git repositoriies
+# see the README file in the tests dir
+tests/test_*/.git

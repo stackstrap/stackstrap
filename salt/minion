@@ -1,7 +1,0 @@
-#
-# StackStrap minion configuration
-#
-
-master: stackstrap-master
-permissive_pki_access: True
-state_verbose: False

@@ -1,3 +1,0 @@
-master: {{ master }}
-id: {{ project.minion_id }}
-state_verbose: False
