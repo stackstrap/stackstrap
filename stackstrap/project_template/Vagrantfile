@@ -14,7 +14,7 @@ salt-call pkg.install git
 cd /tmp
 git clone https://github.com/fatbox/stackstrap-salt.git stackstrap-salt
 cd stackstrap-salt
-git archive master --prefix=/srv | (cd /; tar xf -)
+git archive master --prefix=/srv/ | (cd /; tar xf -)
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
