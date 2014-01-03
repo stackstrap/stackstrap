@@ -13,7 +13,7 @@ class Project(object):
         self.name = name
         self.repository = repository
 
-    def create(self, ref, box, box_name=None):
+    def create(self, ref, box, box_name):
         if os.path.exists(self.name):
             self.log.error("The specified name '{name}' already exists".format(
                 name=self.name
@@ -27,9 +27,6 @@ class Project(object):
 
         # access the repository and archive it to our destination project name
         self.repository.archive_to(ref, self.name)
-
-        if box_name is None:
-            box_name = os.path.basename(box).strip(".box")
 
         # for backwards compatibility we provide a mock project object
         class Project(object):
