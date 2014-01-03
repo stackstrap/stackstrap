@@ -1,6 +1,36 @@
 import logging
 
+class CommandLoader(object):
+    """
+    CommandLoader is a mixin that loads a tuple of Commands and creates them
+    each as a subparser, calling their setup_parser method
+    """
+    commands = {}
+    commands_to_load = tuple()
+
+    def load_commands(self):
+        "Iterates and instantiates all of the commands marked to load"
+        if not hasattr(self, 'subparsers'):
+            raise NotImplementedError("The class %s needs to have a 'subparsers' attribute prior to calling load_commands" %
+                                      self.__class__.__name__)
+
+        for cls in self.commands_to_load:
+            command = cls()
+            parser = self.subparsers.add_parser(
+                command.name,
+                help=command.__doc__
+            )
+            command.setup_parser(parser)
+
+            self.commands[command.name] = command
+
+
 class Command(object):
+    """
+    Classes being loaded through the CommandLoader should include this mixin.
+    It provides the basic skeleton that each command should have and sets up
+    a logger object for the command
+    """
     name = 'UNKNOWN'
 
     def __init__(self):
