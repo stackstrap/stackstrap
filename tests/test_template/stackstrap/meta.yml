@@ -1,0 +1,9 @@
+template_name: Test Template
+template_author: Evan Borgstrom <borgstrom@github>
+template_description: Testing
+
+file_templates:
+  - README
+
+path_templates:
+  - README: README.transformed

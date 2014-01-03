@@ -1,0 +1,10 @@
+state_verbose: False
+file_client: local
+file_roots:
+  base:
+    - /project/salt/root
+    - /srv/salt
+pillar_roots:
+  base:
+    - /project/salt/pillar
+    - /srv/pillar
