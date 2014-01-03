@@ -15,8 +15,8 @@ else:
 
 requirements=[
     'PyYAML==3.10',
-    'Jinja2>=2.7,<=2.8',
-    'sh>=1.0,<=1.1'
+    'Jinja2>=2.7,<2.8',
+    'sh>=1.09'
 ]
 if sys.version_info < (2, 7):
     requirements.append('argparse')
