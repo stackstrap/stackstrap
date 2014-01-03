@@ -6,6 +6,10 @@ Making development more awesome.
 .. image:: https://travis-ci.org/fatbox/stackstrap.png?branch=master
            :target: https://travis-ci.org/fatbox/stackstrap
 
+.. image:: https://coveralls.io/repos/fatbox/stackstrap/badge.png
+           :target: https://coveralls.io/r/fatbox/stackstrap
+
+
 Documentation
 -------------
 
