@@ -20,7 +20,7 @@ def test_project_creation():
 
     repository = Repository(repo_url)
     project = Project("test_project_creation", repository)
-    project.create("master", "http://files.vagrantup.com/precise32.box")
+    project.create("master", "http://files.vagrantup.com/precise32.box", "precise32")
 
     assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
 
