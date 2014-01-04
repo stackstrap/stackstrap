@@ -32,7 +32,7 @@ class TemplateTestCase(StackStrapTestCase):
         self.assertTrue(os.path.exists(template.template_file))
 
         # make sure the file is what we're expecting
-        expected = "{box: 'http://files.vagrantup.com/precise32.box', box_name: precise32, name: test-template,\n  nopull: false, ref: master, url: 'file:///Users/evan/Projects/stackstrap/tests/test_template/'}\n"
+        expected = "{box: 'http://files.vagrantup.com/precise32.box', box_name: precise32, name: test-template,\n  nopull: false, ref: master, url: '%s'}\n" % repo_url
         self.assertEqual(expected, open(template.template_file).read())
 
         # re-load it
