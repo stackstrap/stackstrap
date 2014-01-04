@@ -37,7 +37,7 @@ class TemplateTestCase(StackStrapTestCase):
 
         # re-load it
         template.ref = None
-        self.assertIsNone(template.ref)
+        self.assertEqual(template.ref, None)
         template = Template.load('test-template')
         self.assertEqual(template.ref, 'master')
 
