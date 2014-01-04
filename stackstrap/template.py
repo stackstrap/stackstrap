@@ -49,12 +49,12 @@ class Template(object):
     @classmethod
     def available(cls):
         "Return available templates in our template directory"
-        log = logging.getLogger("templates")
-
-        # TODO: pretty this output up
+        templates = []
         for root, folders, files in os.walk(template_dir()):
             for template in files:
-                log.info(template)
+                templates.append(template)
+
+        return templates
 
     @classmethod
     def load(cls, name):

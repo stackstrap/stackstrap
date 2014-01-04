@@ -1,5 +1,6 @@
 import argparse
 import logging
+import sys
 
 from stackstrap.commands import CommandLoader
 from stackstrap.commands.create import Create
@@ -47,8 +48,8 @@ class StackStrapCLI(CommandLoader):
 
         self.load_commands()
 
-    def main(self):
-        args = self.parser.parse_args()
+    def main(self, args=sys.argv[1:]):
+        args = self.parser.parse_args(args)
 
         log_level = logging.INFO
         log_format = '%(message)s'
