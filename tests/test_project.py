@@ -2,11 +2,13 @@ import os
 import shutil
 import tempfile
 
+from stackstrap.cli import StackStrapCLI
 from stackstrap.project import Project
 from stackstrap.repository import Repository
 
 from . import StackStrapTestCase
-from .test_template import make_template
+
+repo_url = 'file://{0}/test_template/'.format(os.path.dirname(__file__))
 
 class ProjectTestCase(StackStrapTestCase):
     def test_project_creation(self):
@@ -14,9 +16,9 @@ class ProjectTestCase(StackStrapTestCase):
         tmp_dir = tempfile.mkdtemp()
         os.chdir(tmp_dir)
 
-        template = make_template()
-        project = Project("test_project_creation", template)
-        project.create()
+        cli = StackStrapCLI()
+        cli.main(['template', 'add', 'test-template', repo_url])
+        cli.main(['create', 'test_project_creation', 'test-template'])
 
         assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
 

@@ -9,4 +9,6 @@ class List(Command):
         pass
 
     def main(self, args):
-        Template.available()
+        # TODO: pretty this output up
+        for template in Template.available():
+            self.log.info(template)

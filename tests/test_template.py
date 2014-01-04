@@ -2,6 +2,8 @@ import os
 import shutil
 import tempfile
 
+from stackstrap.cli import StackStrapCLI
+from stackstrap.config import settings
 from stackstrap.template import Template, TemplateRepoException, TemplateMetaException
 
 from . import StackStrapTestCase
@@ -68,3 +70,18 @@ class TemplateTestCase(StackStrapTestCase):
 
         template.delete()
         self.assertFalse(os.path.exists(template.template_file))
+
+
+    def test_template_cli(self):
+        cli = StackStrapCLI()
+
+        self.assertFalse(os.path.exists(settings.path('templates', 'test-template')))
+
+        cli.main(['template', 'add', 'test-template', repo_url])
+        self.assertTrue(os.path.exists(settings.path('templates', 'test-template')))
+
+        cli.main(['template', 'list'])
+        self.assertEqual(Template.available(), ['test-template'])
+
+        cli.main(['template', 'remove', 'test-template'])
+        self.assertFalse(os.path.exists(settings.path('templates', 'test-template')))
