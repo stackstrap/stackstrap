@@ -13,6 +13,9 @@ class Project(object):
         self.name = name
         self.repository = repository
 
+        # for backwards compatibility
+        self.short_name = self.name
+
     def create(self, ref, box, box_name):
         if os.path.exists(self.name):
             self.log.error("The specified name '{name}' already exists".format(
@@ -28,18 +31,14 @@ class Project(object):
         # access the repository and archive it to our destination project name
         self.repository.archive_to(ref, self.name)
 
-        # for backwards compatibility we provide a mock project object
-        class Project(object):
-            short_name = self.name
-
         # build our global context
         render_context = {
             'name': self.name,
             'box_url': box,
             'box_name': box_name,
 
-            # see above
-            'project': Project()
+            # for backwards compatibility
+            'project': self
         }
 
         # create our jinja template interface

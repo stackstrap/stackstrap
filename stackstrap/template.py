@@ -1,26 +1,35 @@
 import logging
 import os
+import sh
 import yaml
 
-TEMPLATE_DIR = os.path.expanduser("~/.stackstrap/templates")
-if not os.path.isdir(TEMPLATE_DIR):
-    try:
-        os.makedirs(TEMPLATE_DIR)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(TEMPLATE_DIR):
-            pass
-        else:
-            raise
+from stackstrap.config import settings
+from stackstrap.repository import Repository
 
-class Template(yaml.YAMLObject):
+def template_dir(*parts):
+    return settings.mkdir('templates', *parts)
+
+def template_path(*parts):
+    return settings.path('templates', *parts)
+
+class TemplateException(Exception):
+    pass
+
+class TemplateMetaException(TemplateException):
+    pass
+
+class TemplateRepoException(TemplateException):
+    pass
+
+class Template(object):
     """
     This represents a StackStrap project template
     """
-    template_dir = TEMPLATE_DIR
-    yaml_loader = yaml.SafeLoader
-    yaml_tag = u'!Template'
+    yaml_attrs = ('name', 'url', 'ref', 'box', 'box_name', 'nopull')
 
     def __init__(self, name, url, ref, box, box_name=None, nopull=False):
+        self.log = logging.getLogger("template")
+
         self.name = name
         self.url = url
         self.ref = ref
@@ -31,32 +40,75 @@ class Template(yaml.YAMLObject):
             self.box_name = box_name
         self.nopull = nopull
 
-        self._template_file = os.path.join(Template.template_dir, self.name)
+        self.template_file = template_path(self.name)
 
     @classmethod
     def available(cls):
         "Return available templates in our template directory"
         log = logging.getLogger("templates")
-        # TODO: pretty this up
-        for root, folders, files in os.walk(Template.template_dir):
+
+        # TODO: pretty this output up
+        for root, folders, files in os.walk(template_dir()):
             for template in files:
                 log.info(template)
 
     @classmethod
     def load(cls, name):
         "Load an existing template based on its name"
-        template_file = os.path.join(Template.template_dir, name)
+        template_file = template_path(name)
         if os.path.isfile(template_file):
-            return yaml.safe_load(open(template_file).read())
+            attrs = yaml.safe_load(open(template_file).read())
+            return cls(**attrs)
 
     @property
     def exists(self):
         "Returns true or false if this template exists in our saved templates"
-        return os.path.isfile(self._template_file)
+        return os.path.isfile(self.template_file)
 
     def validate(self):
-        pass
+        "Setup our repository and ensure the template meta-data is correct"
+        self.log.debug("Validating template: %s" % self.name)
+
+        try:
+            self.repository = Repository(self.url)
+        except sh.ErrorReturnCode as e:
+            error_msg = "Failed to setup the repository (%s) for our template (%s): %s" % (
+                self.url,
+                self.name,
+                e
+            )
+            self.log.error(error_msg)
+            raise TemplateRepoException(error_msg)
+
+        # load our yaml from the repository cache
+        meta_path = self.repository.cache_path('stackstrap/meta.yml')
+        self.log.debug("Loading meta-data from '%s'..." % meta_path)
+        try:
+            meta_data = open(meta_path).read()
+        except OSError as e:
+            error_msg = "Failed to read the meta data (%s): %s" % (meta_path, e)
+            self.log.error(error_msg)
+            raise TemplateMetaException(error_msg)
+
+        self.log.debug("Parsing meta-data...")
+        self.log.debug(meta_data)
+        try:
+            self.meta = yaml.load(meta_data)
+        except yaml.error.YAMLError as e:
+            error_msg = "Failed to parse the meta-data (%s): %s" % (meta_path, e)
+            self.log.error(error_msg)
+            raise TemplateMetaException(error_msg)
+
+        self.log.debug("Template validated")
 
     def save(self):
-        with open(self._template_file, 'w') as f:
-            f.write(yaml.dump(self))
+        "Write our YAML file"
+        attrs = {}
+        for attr in self.yaml_attrs:
+            attrs[attr] = getattr(self, attr)
+
+        # call template dir to ensure our template directory exists
+        template_dir()
+
+        with open(self.template_file, 'w') as f:
+            f.write(yaml.dump(attrs))
