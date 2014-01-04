@@ -7,38 +7,46 @@ import yaml
 from stackstrap.jinja import JinjaInterface
 
 class Project(object):
-    def __init__(self, name, repository):
+    def __init__(self, name, template):
         self.log = logging.getLogger("project")
 
         self.name = name
-        self.repository = repository
+        self.template = template
 
         # for backwards compatibility
         self.short_name = self.name
 
-    def create(self, ref, box, box_name):
+    def create(self):
         if os.path.exists(self.name):
             self.log.error("The specified name '{name}' already exists".format(
                 name=self.name
             ))
             return False
 
+        if not self.template.validated:
+            self.template.validate()
+
+        if not self.template.repository:
+            self.log.error("Failed to setup template repository. Cannot create a new project")
+            return
+
         self.log.info("Creating a new project named '{name}' using {template} as the template...".format(
             name=self.name,
-            template=self.repository.url
+            template=self.template.name
         ))
 
         # access the repository and archive it to our destination project name
-        self.repository.archive_to(ref, self.name)
+        self.template.archive_to(self.name)
 
         # build our global context
         render_context = {
             'name': self.name,
-            'box_url': box,
-            'box_name': box_name,
+            'box_url': self.template.box,
+            'box_name': self.template.box_name,
 
             # for backwards compatibility
-            'project': self
+            'project': self,
+            'template': self.template,
         }
 
         # create our jinja template interface

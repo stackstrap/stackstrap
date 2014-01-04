@@ -41,6 +41,10 @@ class Template(object):
         self.nopull = nopull
 
         self.template_file = template_path(self.name)
+        self.repository = None
+
+        self.validated = False
+        self.saved = False
 
     @classmethod
     def available(cls):
@@ -58,7 +62,11 @@ class Template(object):
         template_file = template_path(name)
         if os.path.isfile(template_file):
             attrs = yaml.safe_load(open(template_file).read())
-            return cls(**attrs)
+            template = cls(**attrs)
+
+            # we mark saved as True since we're loading the template
+            template.saved = True
+            return template
 
     @property
     def exists(self):
@@ -99,6 +107,7 @@ class Template(object):
             self.log.error(error_msg)
             raise TemplateMetaException(error_msg)
 
+        self.validated = True
         self.log.debug("Template validated")
 
     def save(self):
@@ -112,3 +121,13 @@ class Template(object):
 
         with open(self.template_file, 'w') as f:
             f.write(yaml.dump(attrs))
+
+        self.saved = True
+
+    def delete(self):
+        "Delete our template from the file system"
+        os.unlink(self.template_file)
+
+    def archive_to(self, destination, *archive_args):
+        "Stub to our repository archive_to method that uses our ref"
+        self.repository.archive_to(self.ref, destination, *archive_args)

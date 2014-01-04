@@ -2,8 +2,6 @@ import os
 import shutil
 import tempfile
 
-from nose import with_setup
-
 from stackstrap.project import Project
 from stackstrap.repository import Repository
 

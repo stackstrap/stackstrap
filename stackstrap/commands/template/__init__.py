@@ -1,15 +1,16 @@
+import logging
 
 from stackstrap.commands import Command, CommandLoader
 
 from stackstrap.commands.template.add import Add
-#from stackstrap.commands.template.create import Create
+# TODO: from stackstrap.commands.template.create import Create
 from stackstrap.commands.template.list import List
-#from stackstrap.commands.template.remove import Remove
+from stackstrap.commands.template.remove import Remove
 
 class Template(Command, CommandLoader):
     "Manages templates"
     name = 'template'
-    commands_to_load = (Add, List)# Create, List, Remove):
+    commands_to_load = (Add, List, Remove) 
 
     def setup_parser(self, parser):
         self.parser = parser
