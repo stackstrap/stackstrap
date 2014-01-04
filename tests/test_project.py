@@ -6,9 +6,7 @@ from stackstrap.project import Project
 from stackstrap.repository import Repository
 
 from . import StackStrapTestCase
-
-# setup our repo & cache urls & dirs
-repo_url = 'file://{0}/test_template/'.format(os.path.dirname(__file__))
+from .test_template import make_template
 
 class ProjectTestCase(StackStrapTestCase):
     def test_project_creation(self):
@@ -16,9 +14,9 @@ class ProjectTestCase(StackStrapTestCase):
         tmp_dir = tempfile.mkdtemp()
         os.chdir(tmp_dir)
 
-        repository = Repository(repo_url)
-        project = Project("test_project_creation", repository)
-        project.create("master", "http://files.vagrantup.com/precise32.box", "precise32")
+        template = make_template()
+        project = Project("test_project_creation", template)
+        project.create()
 
         assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
 
