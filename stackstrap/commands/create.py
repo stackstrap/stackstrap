@@ -4,8 +4,8 @@ import os
 import re
 
 from stackstrap.commands import Command
-from stackstrap.repository import Repository
 from stackstrap.project import Project
+from stackstrap.template import Template
 
 def name_type(value):
     "This is the argument type that validates project names"
@@ -40,13 +40,13 @@ class Create(Command):
 
         self.parser.add_argument(
             'template',
-            metavar='GIT_URL',
+            metavar='TEMPLATE',
             type=str,
-            help='The GIT URL of the template to use'
+            help='The name of the template to use'
         )
 
 
     def main(self, args):
-        template_repo = Repository(args.template, nopull=args.nopull)
-        project = Project(args.name, template_repo)
-        project.create(args.ref, args.box, box_name=args.box_name)
+        template = Template.load(args.template)
+        project = Project(args.name, template)
+        project.create()

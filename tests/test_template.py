@@ -59,3 +59,12 @@ class TemplateTestCase(StackStrapTestCase):
     def test_template_validate_fail_bad_repo(self):
         template = make_template(missing_repo_url)
         self.assertRaises(TemplateRepoException, template.validate)
+
+    def test_template_delete(self):
+        template = make_template()
+
+        template.save()
+        self.assertTrue(os.path.exists(template.template_file))
+
+        template.delete()
+        self.assertFalse(os.path.exists(template.template_file))
