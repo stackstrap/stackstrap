@@ -1,14 +1,18 @@
 import argparse
 import logging
+import sys
 
+from stackstrap.commands import CommandLoader
 from stackstrap.commands.create import Create
+from stackstrap.commands.template import Template
 
 from stackstrap import __version__
 
-class StackStrapCLI(object):
+class StackStrapCLI(CommandLoader):
     """
     The main CLI interface for StackStrap
     """
+    commands_to_load = (Create, Template)
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(
@@ -42,20 +46,10 @@ class StackStrapCLI(object):
             help='show only warnings and errors'
         )
 
-        self.commands = {}
-        self.add_command(Create())
+        self.load_commands()
 
-    def add_command(self, command):
-        parser = self.subparsers.add_parser(
-            command.name,
-            help=command.__doc__
-        )
-        command.setup_parser(parser)
-
-        self.commands[command.name] = command
-
-    def main(self):
-        args = self.parser.parse_args()
+    def main(self, args=sys.argv[1:]):
+        args = self.parser.parse_args(args)
 
         log_level = logging.INFO
         log_format = '%(message)s'

@@ -22,6 +22,9 @@ dist/*
 build/*
 *.egg-info/
 
+# coverage files
+.coverage
+
 # testing git repositoriies
 # see the README file in the tests dir
 tests/test_*/.git

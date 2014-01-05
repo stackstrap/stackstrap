@@ -4,67 +4,71 @@ import os
 import sh
 import tempfile
 
-def mkdir_p(path):
-    try:
-        os.makedirs(path, 0755)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
+from stackstrap.config import settings
+
+REPOSITORY_CACHE = 'repository_cache'
 
 class Repository(object):
     "Represents a GIT Repository and allows for easy operations"
 
-    _git = None
-
-    @property
-    def git(self):
-        if not self._git:
-            self._git = sh.git.bake(_cwd=self.path, _env={
-                'GIT_SSH': "loose_ssh.sh"
-            })
-        return self._git
-
-    def __init__(self, url, nopull=False, cache_dir=None):
-        self.url = url
+    def __init__(self, url, nopull=False):
         self.log = logging.getLogger("repository")
+        self.url = url
 
-        if cache_dir is None:
-            cache_dir = os.path.expanduser('~/.stackstrap/repository_cache/')
+        self.cache_id = "".join([
+            c if c.isalnum() else '-'
+            for c in url
+        ])
 
-        self.path = os.path.join(
-            cache_dir,
-            "".join([
-                c if c.isalnum() else '-'
-                for c in url
-            ])
-        )
+        # ensure the top level cache dir exists and construct our path
+        settings.mkdir(REPOSITORY_CACHE)
+        self.path = settings.path(REPOSITORY_CACHE, self.cache_id)
 
+        # create our git interface via the sh module
+        # the loose_ssh.sh script is a simple wrapper that sets:
+        #     StrictHostKeyChecking=no
+        #
+        # see: https://github.com/fatbox/stackstrap/blob/master/scripts/loose_ssh.sh
+        self.git = sh.git.bake(_cwd=self.path, _env={
+            'GIT_SSH': "loose_ssh.sh"
+        })
+
+        # if our path exists then the repository already exists, do a pull
+        # otherwise clone it into the directory
         if os.path.exists(self.path):
             if nopull:
                 self.log.debug("Skipping pull")
             else:
-                self.log.debug("Repository already exists in our cache, pulling from origin...")
+                self.log.debug("Repository already exists in our cache (%s), pulling from origin..." % self.path)
                 self.git('pull', 'origin')
                 self.git('submodule', 'update')
         else:
-            self.log.debug("Creating a new copy of the repository in our cache, cloning...")
-            mkdir_p(self.path)
+            self.log.debug("Creating a new copy of the repository in our cache (%s)..." % self.path)
+            settings.mkdir_p(self.path)
             self.git('clone', '--recurse-submodules', url, '.')
 
     def archive_to(self, git_ref, destination, *archive_args):
+        """
+        Archive the specified GIT ref to the specified destination
+
+        Any extra args are passed to the sh command directly so you can
+        add extra flags for `git archive` should you desire.
+        """
         self.log.debug("Archiving '{ref}' to {destination}".format(
             ref=git_ref,
             destination=destination
         ))
 
-        try:
-            mkdir_p(destination)
+        tar_file = None
+        settings.mkdir_p(destination)
 
+        try:
             (fd, tar_file) = tempfile.mkstemp()
             self.git.archive("remotes/origin/%s" % git_ref, *archive_args, _out=tar_file)
             sh.tar("xf", tar_file, _cwd=destination)
         finally:
             if tar_file:
                 os.remove(tar_file)
+
+    def cache_path(self, *parts):
+        return os.path.join(self.path, *parts)
