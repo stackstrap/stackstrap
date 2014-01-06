@@ -89,5 +89,5 @@ class TemplateTestCase(StackStrapTestCase):
 
         # call this a second time and it should error because the template
         # doesn't exist
-        with self.assertRaises((CommandError, SystemExit)):
-            cli.main(['template', 'remove', 'test-template'])
+        self.assertRaises((CommandError, SystemExit),
+                          lambda: cli.main(['template', 'remove', 'test-template']))

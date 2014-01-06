@@ -37,5 +37,5 @@ class ProjectTestCase(StackStrapTestCase):
 
     def test_project_invalid_template(self):
         cli = StackStrapCLI()
-        with self.assertRaises((CommandError, SystemExit)) as cm:
-            cli.main(['create', 'test_project_creation', 'test-template'])
+        self.assertRaises((CommandError, SystemExit),
+                          lambda: cli.main(['create', 'test_project_creation', 'test-template']))
