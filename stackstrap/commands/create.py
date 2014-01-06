@@ -3,8 +3,8 @@ import inspect
 import os
 import re
 
-from stackstrap.commands import Command
-from stackstrap.project import Project
+from stackstrap.commands import Command, CommandError
+from stackstrap.project import Project, ProjectException
 from stackstrap.template import Template
 
 def name_type(value):
@@ -48,5 +48,11 @@ class Create(Command):
 
     def main(self, args):
         template = Template.load(args.template)
-        project = Project(args.name, template)
-        project.create()
+        if template is None:
+            raise CommandError("Invalid template: %s" % args.template)
+
+        try:
+            project = Project(args.name, template)
+            project.create()
+        except ProjectException as e:
+            raise CommandError(str(e))

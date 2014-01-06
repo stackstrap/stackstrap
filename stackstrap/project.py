@@ -6,6 +6,9 @@ import yaml
 
 from stackstrap.jinja import JinjaInterface
 
+class ProjectException(Exception):
+    pass
+
 class Project(object):
     def __init__(self, name, template):
         self.log = logging.getLogger("project")
@@ -18,17 +21,12 @@ class Project(object):
 
     def create(self):
         if os.path.exists(self.name):
-            self.log.error("The specified name '{name}' already exists".format(
+            raise ProjectException("The specified name '{name}' already exists".format(
                 name=self.name
             ))
-            return False
 
         if not self.template.validated:
             self.template.validate()
-
-        if not self.template.repository:
-            self.log.error("Failed to setup template repository. Cannot create a new project")
-            return
 
         self.log.info("Creating a new project named '{name}' using {template} as the template...".format(
             name=self.name,
