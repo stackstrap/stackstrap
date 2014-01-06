@@ -51,5 +51,5 @@ Contents
 .. _Vagrant: http://vagrantup.com/
 .. _Salt: http://saltstack.com/
 .. _provisioners: http://docs.vagrantup.com/v2/provisioning/index.html
-.. _community repository: https://github.com/fatbox/stackstrap-salt
+.. _community repository: https://github.com/stackstrap/stackstrap-salt
 .. _Google Group: https://groups.google.com/d/forum/stackstrap
