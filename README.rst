@@ -3,7 +3,7 @@ StackStrap
 Making development more awesome by combining the power of Salt_ and Vagrant_
 with templates and a macro driven `community repository of Salt states`_.
 
-.. image:: https://tavis-ci.org/stackstrap/stackstrap.png?branch=master
+.. image:: https://api.travis-ci.org/stackstrap/stackstrap.png?branch=master
            :target: https://travis-ci.org/stackstrap/stackstrap
 
 .. image:: https://coveralls.io/repos/stackstrap/stackstrap/badge.png
