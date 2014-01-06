@@ -3,6 +3,9 @@ import logging
 import os
 import yaml
 
+class SettingsException(Exception):
+    pass
+
 class Settings(object):
     def __init__(self, base_dir):
         self.log = logging.getLogger("settings")
@@ -19,13 +22,15 @@ class Settings(object):
             self.log.debug("Attempting to load settings from: %s" % settings_file)
             try:
                 data = open(settings_file).read()
-            except OSError as e:
+            except IOError as e:
                 self.log.error("Failed to load settings file (%s): %s" % (settings_file, e))
+                raise
             else:
-                try:
-                    settings_data = yaml.safe_load(data)
-                except yaml.error.YAMLError as e:
-                    self.log.error("Failed to parse YAML data (%s): %s" % (settings_file, e))
+                settings_data = yaml.load(data)
+                if not isinstance(settings_data, dict):
+                    error_msg = "Failed to parse YAML data (%s): value is not a dictionary" % settings_file
+                    self.log.error(error_msg)
+                    raise SettingsException(error_msg)
 
         self.data = settings_data
 
