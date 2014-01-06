@@ -3,6 +3,7 @@ import shutil
 import tempfile
 
 from stackstrap.cli import StackStrapCLI
+from stackstrap.commands import CommandError
 from stackstrap.project import Project
 from stackstrap.repository import Repository
 
@@ -33,3 +34,8 @@ class ProjectTestCase(StackStrapTestCase):
 
         os.chdir(orig_dir)
         shutil.rmtree(tmp_dir)
+
+    def test_project_invalid_template(self):
+        cli = StackStrapCLI()
+        with self.assertRaises((CommandError, SystemExit)) as cm:
+            cli.main(['create', 'test_project_creation', 'test-template'])

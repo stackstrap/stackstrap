@@ -70,5 +70,3 @@ class StackStrapCLI(CommandLoader):
         except CommandError as e:
             self.log.error(str(e))
             sys.exit(1)
-
-        sys.exit(0)

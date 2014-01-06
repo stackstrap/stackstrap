@@ -3,6 +3,7 @@ import shutil
 import tempfile
 
 from stackstrap.cli import StackStrapCLI
+from stackstrap.commands import CommandError
 from stackstrap.config import settings
 from stackstrap.template import Template, TemplateRepoException, TemplateMetaException
 
@@ -88,4 +89,5 @@ class TemplateTestCase(StackStrapTestCase):
 
         # call this a second time and it should error because the template
         # doesn't exist
-        self.assertRaises(CommandError, lambda: cli.main(['template', 'remove', 'test-template']))
+        with self.assertRaises((CommandError, SystemExit)):
+            cli.main(['template', 'remove', 'test-template'])
