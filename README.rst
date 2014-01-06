@@ -9,6 +9,13 @@ with templates and a macro driven `community repository of Salt states`_.
 .. image:: https://coveralls.io/repos/fatbox/stackstrap/badge.png
            :target: https://coveralls.io/r/fatbox/stackstrap
 
+.. image:: https://pypip.in/v/$REPO/badge.png
+           :target: https://crate.io/packages/$REPO/
+           :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/$REPO/badge.png
+           :target: https://crate.io/packages/$REPO/
+           :alt: Number of PyPI downloads
 
 Documentation
 -------------
