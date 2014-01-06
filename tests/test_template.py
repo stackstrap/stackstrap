@@ -85,3 +85,7 @@ class TemplateTestCase(StackStrapTestCase):
 
         cli.main(['template', 'remove', 'test-template'])
         self.assertFalse(os.path.exists(settings.path('templates', 'test-template')))
+
+        # call this a second time and it should error because the template
+        # doesn't exist
+        self.assertRaises(CommandError, lambda: cli.main(['template', 'remove', 'test-template']))

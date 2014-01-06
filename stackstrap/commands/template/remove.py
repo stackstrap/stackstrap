@@ -1,4 +1,4 @@
-from stackstrap.commands import Command
+from stackstrap.commands import Command, CommandError
 from stackstrap.template import Template
 
 class Remove(Command):
@@ -16,8 +16,7 @@ class Remove(Command):
     def main(self, args):
         template = Template.load(args.name)
         if not template:
-            self.log.error("Invalid template name: %s" % args.name)
-            return
+            raise CommandError("Invalid template name: %s" % args.name)
 
         self.log.info("Removing template '%s'" % template.name)
         template.delete()
