@@ -13,10 +13,11 @@ class CLITestCase(StackStrapTestCase):
 
         # use assertRaises as a context manager so we get the exit code
         # see: http://stackoverflow.com/a/15672165
-        with self.assertRaises(SystemExit) as cm:
+        try:
             cli.main(['template', 'remove', 'doesntexist'])
-        self.assertEqual(cm.exception.code, 1)
-
+            raise Exception("This shouldn't be reached")
+        except SystemExit as e:
+            self.assertEqual(e.code, 1)
 
 class CommandLoaderTestCase(StackStrapTestCase):
     def test_missing_subparsers(self):
