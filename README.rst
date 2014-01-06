@@ -26,6 +26,6 @@ The source for the documentation is in the `docs` directory.
 
 .. _Salt: http://saltstack.org/
 .. _Vagrant: http://vagrantup.com/
-.. _community repository of Salt states: http://github.com/fatbox/stackstrap-salt/
+.. _community repository of Salt states: http://github.com/stackstrap/stackstrap-salt/
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
