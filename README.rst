@@ -3,11 +3,11 @@ StackStrap
 Making development more awesome by combining the power of Salt_ and Vagrant_
 with templates and a macro driven `community repository of Salt states`_.
 
-.. image:: https://travis-ci.org/fatbox/stackstrap.png?branch=master
-           :target: https://travis-ci.org/fatbox/stackstrap
+.. image:: https://tavis-ci.org/stackstrap/stackstrap.png?branch=master
+           :target: https://travis-ci.org/stackstrap/stackstrap
 
-.. image:: https://coveralls.io/repos/fatbox/stackstrap/badge.png
-           :target: https://coveralls.io/r/fatbox/stackstrap
+.. image:: https://coveralls.io/repos/stackstrap/stackstrap/badge.png
+           :target: https://coveralls.io/r/stackstrap/stackstrap
 
 .. image:: https://pypip.in/v/stackstrap/badge.png
            :target: https://crate.io/packages/stackstrap/
