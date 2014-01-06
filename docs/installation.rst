@@ -38,4 +38,4 @@ any where on your system.
 
 .. _Vagrant: http://vagrantup.com/
 .. _Vagrant Installation Document: http://docs.vagrantup.com/v2/installation/index.html
-.. _on the cheeseshop: pypi.python.org/pypi/stackstrap/
+.. _on the cheeseshop: http://pypi.python.org/pypi/stackstrap/
