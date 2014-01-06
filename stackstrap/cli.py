@@ -2,7 +2,7 @@ import argparse
 import logging
 import sys
 
-from stackstrap.commands import CommandLoader
+from stackstrap.commands import CommandLoader, CommandError
 from stackstrap.commands.create import Create
 from stackstrap.commands.template import Template
 
@@ -65,4 +65,10 @@ class StackStrapCLI(CommandLoader):
         self.log.debug("StackStrap starting up")
         self.log.debug("Command: %s" % args.command)
 
-        self.commands[args.command].main(args)
+        try:
+            self.commands[args.command].main(args)
+        except CommandError as e:
+            self.log.error(str(e))
+            sys.exit(1)
+
+        sys.exit(0)

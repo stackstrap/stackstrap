@@ -1,5 +1,8 @@
 import logging
 
+class CommandError(Exception):
+    pass
+
 class CommandLoader(object):
     """
     CommandLoader is a mixin that loads a tuple of Commands and creates them
@@ -7,10 +10,11 @@ class CommandLoader(object):
     """
     commands = {}
     commands_to_load = tuple()
+    subparsers = None
 
     def load_commands(self):
         "Iterates and instantiates all of the commands marked to load"
-        if not hasattr(self, 'subparsers'):
+        if self.subparsers is None:
             raise NotImplementedError("The class %s needs to have a 'subparsers' attribute prior to calling load_commands" %
                                       self.__class__.__name__)
 
