@@ -12,7 +12,7 @@ salt-call pkg.install git
 # setup our /srv directory
 # TODO: make the GIT URL & ref configurable
 cd /tmp
-git clone https://github.com/stackstrap/stackstrap-salt.git stackstrap-salt
+git clone https://github.com/openops/stackstrap-salt.git stackstrap-salt
 cd stackstrap-salt
 git archive master --prefix=/srv/ | (cd /; tar xf -)
 SCRIPT

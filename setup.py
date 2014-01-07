@@ -32,7 +32,7 @@ setup(
     long_description=open('README.rst').read(),
     author='Evan Borgstrom',
     author_email='evan@borgstrom.ca',
-    url='https://github.com/stackstrap/stackstrap',
+    url='https://github.com/openops/stackstrap',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
