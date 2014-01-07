@@ -117,7 +117,7 @@ TODO: Document this better.
 
 
 .. _Jinja: http://jinja.pocoo.org/docs/
-.. _community repository: https://github.com/stackstrap/stackstrap-salt
-.. _Project source code: https://github.com/stackstrap/stackstrap/blob/master/application/stackstrap/projects/models.py
+.. _community repository: https://github.com/openops/stackstrap-salt
+.. _Project source code: https://github.com/openops/stackstrap/blob/master/application/stackstrap/projects/models.py
 
 .. vim: set ts=4 sw=4 sts=4 et ai :

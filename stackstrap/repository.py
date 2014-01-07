@@ -28,7 +28,7 @@ class Repository(object):
         # the loose_ssh.sh script is a simple wrapper that sets:
         #     StrictHostKeyChecking=no
         #
-        # see: https://github.com/stackstrap/stackstrap/blob/master/scripts/loose_ssh.sh
+        # see: https://github.com/openops/stackstrap/blob/master/scripts/loose_ssh.sh
         self.git = sh.git.bake(_cwd=self.path, _env={
             'GIT_SSH': "loose_ssh.sh"
         })
