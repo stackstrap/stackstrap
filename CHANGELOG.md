@@ -1,5 +1,10 @@
 # [Changelog](https://github.com/openops/stackstrap/releases)
 
+## [0.1.2](https://github.com/openops/stackstrap/compare/0.1.1...0.1.2)
+
+* [4425781](https://github.com/openops/stackstrap/commit/4425781) updated copyright
+* [beaa675](https://github.com/openops/stackstrap/commit/beaa675) moving repo once again
+
 ## [0.1.1](https://github.com/openops/stackstrap/compare/0.1.0...0.1.1)
 
 * [45536bb](https://github.com/openops/stackstrap/commit/45536bb) Added commands folder to MANIFEST
