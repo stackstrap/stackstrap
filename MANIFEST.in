@@ -2,3 +2,4 @@ include README.rst
 include LICENSE
 recursive-include scripts *
 recursive-include stackstrap/project_template *
+recursive-include stackstrap/commands *
