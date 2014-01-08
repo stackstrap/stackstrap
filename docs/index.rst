@@ -20,6 +20,10 @@ configuring the system is a whole other question.
 StackStrap aims to ease this situation by utilizing the Salt_ provisioner in
 Vagrant along with a `community repository`_ of Salt_ states that allow you to
 quickly and reliably create development environments using our simple macros.
+These macros are coupled with a jinja parsed template that lays out your ideal
+project file structure. This way you can easily strap your favourite framework
+in just the way your team likes to use it. You can have a bootable development
+ready environment to play with in minutes.
 
 Here be dragons
 ---------------
