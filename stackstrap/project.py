@@ -6,8 +6,10 @@ import yaml
 
 from stackstrap.jinja import JinjaInterface
 
+
 class ProjectException(Exception):
     pass
+
 
 class Project(object):
     def __init__(self, name, template):
@@ -21,14 +23,17 @@ class Project(object):
 
     def create(self):
         if os.path.exists(self.name):
-            raise ProjectException("The specified name '{name}' already exists".format(
-                name=self.name
-            ))
+            raise ProjectException(
+                "The specified name '{name}' already exists".format(
+                    name=self.name
+                ))
 
         if not self.template.validated:
             self.template.validate()
 
-        self.log.info("Creating a new project named '{name}' using {template} as the template...".format(
+        self.log.info(
+            "Creating a new project named '{name}' \
+            using {template} as the template...".format(
             name=self.name,
             template=self.template.name
         ))
@@ -54,7 +59,13 @@ class Project(object):
         )
 
         def mkdir(*parts):
-            return os.mkdir(os.path.join(self.name, *parts), 0755)
+            self.log.debug("Making a folder...")
+            try:
+                attempt_mkdir = os.mkdir(os.path.join(self.name, *parts), 0755)
+            except:
+                self.log.debug("Folder exists moving on...")
+                attempt_mkdir = False
+            return attempt_mkdir
 
         def path(*parts):
             return os.path.join(self.name, *parts)
@@ -68,8 +79,14 @@ class Project(object):
         # recurse over our template and copy it in into place
         self.log.debug("Copying project template into place...")
 
-        base_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        template_dir = os.path.abspath(os.path.join(base_dir, "project_template"))
+        base_dir = os.path.dirname(
+            os.path.abspath(
+                inspect.getfile(
+                    inspect.currentframe()
+                    )))
+        template_dir = os.path.abspath(
+            os.path.join(base_dir, "project_template")
+            )
         self.log.debug("Processing: {0}".format(template_dir))
 
         for root, folders, files in os.walk(template_dir):
@@ -83,7 +100,9 @@ class Project(object):
                 try:
                     render_in_place(relative_dir, f)
                 except UnicodeDecodeError:
-                    self.log.warn("Failed to render template due to unicode errors: {0}".format(
+                    self.log.warn(
+                        "Failed to render template due to \
+                        unicode errors: {0}".format(
                         path(relative_dir, f)
                     ))
 
@@ -97,13 +116,15 @@ class Project(object):
 
         # move the salt files into place
         if os.path.exists(path('salt', 'state.sls')):
-            self.log.debug("Copying template state file to salt/root/%s.sls" % self.name)
+            self.log.debug("Copying template state  \
+                           file to salt/root/%s.sls" % self.name)
             shutil.copyfile(
                 path('salt', 'state.sls'),
                 path('salt', 'root', '%s.sls' % self.name)
             )
         if os.path.exists(path('salt', 'pillar.sls')):
-            self.log.debug("Copying template pillar file to salt/pillar/%s.sls" % self.name)
+            self.log.debug("Copying template pillar  \
+                           file to salt/pillar/%s.sls" % self.name)
             shutil.copyfile(
                 path('salt', 'pillar.sls'),
                 path('salt', 'pillar', '%s.sls' % self.name)
@@ -122,13 +143,17 @@ class Project(object):
         path_templates = metadata.get("path_templates", [])
         for path_template in path_templates:
             for orig_path in path_template:
-                self.log.debug("%s -> %s" % (orig_path, path_template[orig_path]))
+                self.log.debug(
+                    "%s -> %s" % (orig_path, path_template[orig_path])
+                )
                 os.rename(path(orig_path),
                           path(path_template[orig_path]))
 
         # now destroy the stackstrap.yml file as it's no longer needed
         shutil.rmtree(path('stackstrap.yml'), ignore_errors=True)
 
-        self.log.info("Done!\nYou can now 'vagrant up' your development environment from the {name} folder".format(
+        self.log.info(
+            "Done!\nYou can now 'vagrant up' your development \
+            environment from the {name} folder".format(
             name=self.name
         ))
