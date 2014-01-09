@@ -1,5 +1,6 @@
 import inspect
 import logging
+import errno
 import os
 import shutil
 import yaml
@@ -63,10 +64,11 @@ class Project(object):
             self.log.debug("Making folder \""+path+"\"...")
             try:
                 os.mkdir(path, 0755)
-            except OSError as exc: # Python >2.5
+            except OSError as exc:  # Python >2.5
                 if exc.errno == errno.EEXIST and os.path.isdir(path):
                     self.log.debug("Folder exists moving on...")
-                else: raise
+                else:
+                    raise
 
         def path(*parts):
             return os.path.join(self.name, *parts)
