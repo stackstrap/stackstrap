@@ -59,13 +59,14 @@ class Project(object):
         )
 
         def mkdir(*parts):
-            self.log.debug("Making a folder...")
+            path = os.path.join(self.name, *parts)
+            self.log.debug("Making folder \""+path+"\"...")
             try:
-                attempt_mkdir = os.mkdir(os.path.join(self.name, *parts), 0755)
-            except:
-                self.log.debug("Folder exists moving on...")
-                attempt_mkdir = False
-            return attempt_mkdir
+                os.mkdir(path, 0755)
+            except OSError as exc: # Python >2.5
+                if exc.errno == errno.EEXIST and os.path.isdir(path):
+                    self.log.debug("Folder exists moving on...")
+                else: raise
 
         def path(*parts):
             return os.path.join(self.name, *parts)
