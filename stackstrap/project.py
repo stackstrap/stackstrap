@@ -93,7 +93,7 @@ class Project(object):
         # read the metadata
         # it must be processed as a template, then loaded as YAML
         self.log.debug("Loading template metadata...")
-        metadata = yaml.load(jinja.render_file('stackstrap/meta.yml'))
+        metadata = yaml.load(jinja.render_file('stackstrap.yml'))
 
         # move the salt files into place
         if os.path.exists(path('stackstrap', 'state.sls')):
@@ -112,7 +112,7 @@ class Project(object):
         # iterate the files to parse with Jinja templates
         self.log.debug("Processing file templates...")
         file_template_paths = metadata.get("file_templates", [])
-        file_template_paths.append("stackstrap/meta.yml")
+        file_template_paths.append("stackstrap.yml")
         for p in file_template_paths:
             self.log.debug(p)
             render_in_place(p)

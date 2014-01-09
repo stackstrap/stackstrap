@@ -89,7 +89,7 @@ class Template(object):
             raise TemplateRepoException(error_msg)
 
         # load our yaml from the repository cache
-        meta_path = self.repository.cache_path('stackstrap/meta.yml')
+        meta_path = self.repository.cache_path('stackstrap.yml')
         self.log.debug("Loading meta-data from '%s'..." % meta_path)
         try:
             meta_data = open(meta_path).read()
