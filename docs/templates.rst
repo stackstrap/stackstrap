@@ -21,16 +21,13 @@ templates with a lowercase 't'.
 
 Project Template meta-data
 --------------------------
-The meta-data for Project Templates is stored within a folder at the root of
-the project named ``stackstrap``. The folder contains 3 files which supply
-pillar & state data and describe the Project Template.
-
-This directory only exists in the Template itsef and is not present in the
-projects that are generated.
+The meta-data for Project Templates is stored within a file at the root of
+the project named ``stackstrap.yml``. This directory only exists in the 
+Template itsef and is not present in the projects that are generated.
 
 
-meta.yml
-~~~~~~~~
+stackstrap.yml
+~~~~~~~~~~~~~~
 When loaing a Template into a Project, Stackstrap will take time to parse files
 and paths with the Jinja template engine. This allows you to seed your Template
 with project specific name spacing and other goodies like secrets.
@@ -101,6 +98,10 @@ made available in the context:
 * **`master`** - the hostname of your master instace of StackStrap.
 * **`master_ip`** - the IP address of your master instance of Stackstrap.
 
+Salt Files
+----------
+The salt macros and pillar data are stored in a folder called `salt` at the
+root of the project.
 
 state.sls
 ~~~~~~~~~
