@@ -96,16 +96,16 @@ class Project(object):
         metadata = yaml.load(jinja.render_file('stackstrap.yml'))
 
         # move the salt files into place
-        if os.path.exists(path('stackstrap', 'state.sls')):
+        if os.path.exists(path('salt', 'state.sls')):
             self.log.debug("Copying template state file to salt/root/%s.sls" % self.name)
             shutil.copyfile(
-                path('stackstrap', 'state.sls'),
+                path('salt', 'state.sls'),
                 path('salt', 'root', '%s.sls' % self.name)
             )
-        if os.path.exists(path('stackstrap', 'pillar.sls')):
+        if os.path.exists(path('salt', 'pillar.sls')):
             self.log.debug("Copying template pillar file to salt/pillar/%s.sls" % self.name)
             shutil.copyfile(
-                path('stackstrap', 'pillar.sls'),
+                path('salt', 'pillar.sls'),
                 path('salt', 'pillar', '%s.sls' % self.name)
             )
 
@@ -126,8 +126,8 @@ class Project(object):
                 os.rename(path(orig_path),
                           path(path_template[orig_path]))
 
-        # now destroy the stackstrap directory as it's no longer needed
-        shutil.rmtree(path('stackstrap'), ignore_errors=True)
+        # now destroy the stackstrap.yml file as it's no longer needed
+        shutil.rmtree(path('stackstrap.yml'), ignore_errors=True)
 
         self.log.info("Done!\nYou can now 'vagrant up' your development environment from the {name} folder".format(
             name=self.name
