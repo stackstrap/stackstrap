@@ -21,8 +21,6 @@ class ProjectTestCase(StackStrapTestCase):
         cli.main(['template', 'add', 'test-template', repo_url])
         cli.main(['create', 'test_project_creation', 'test-template'])
 
-        assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
-
         assert not os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README"))
         assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README.transformed"))
 
