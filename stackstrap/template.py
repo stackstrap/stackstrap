@@ -6,20 +6,26 @@ import yaml
 from stackstrap.config import settings
 from stackstrap.repository import Repository
 
+
 def template_dir(*parts):
     return settings.mkdir('templates', *parts)
+
 
 def template_path(*parts):
     return settings.path('templates', *parts)
 
+
 class TemplateException(Exception):
     pass
+
 
 class TemplateMetaException(TemplateException):
     pass
 
+
 class TemplateRepoException(TemplateException):
     pass
+
 
 class Template(object):
     """
@@ -78,9 +84,10 @@ class Template(object):
         self.log.debug("Validating template: %s" % self.name)
 
         try:
-            self.repository = Repository(self.url)
+            self.repository = Repository(self.url, self.ref)
         except sh.ErrorReturnCode as e:
-            error_msg = "Failed to setup the repository (%s) for our template (%s): %s" % (
+            error_msg = "Failed to setup the repository (%s) \
+                         for our template (%s): %s" % (
                 self.url,
                 self.name,
                 e
@@ -94,7 +101,8 @@ class Template(object):
         try:
             meta_data = open(meta_path).read()
         except OSError as e:
-            error_msg = "Failed to read the meta data (%s): %s" % (meta_path, e)
+            error_msg = "Failed to read the meta data (%s): \
+                         %s" % (meta_path, e)
             self.log.error(error_msg)
             raise TemplateMetaException(error_msg)
 
@@ -103,7 +111,8 @@ class Template(object):
         try:
             self.meta = yaml.load(meta_data)
         except yaml.error.YAMLError as e:
-            error_msg = "Failed to parse the meta-data (%s): %s" % (meta_path, e)
+            error_msg = "Failed to parse the meta-data (%s): \
+                         %s" % (meta_path, e)
             self.log.error(error_msg)
             raise TemplateMetaException(error_msg)
 
