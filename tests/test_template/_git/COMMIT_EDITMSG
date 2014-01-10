@@ -1,1 +1,11 @@
-Bye
+Renamed meta.yml to stackstrap.yml
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#	renamed:    stackstrap/meta.yml -> stackstrap.yml
+#
+diff --git c/stackstrap/meta.yml i/stackstrap.yml
+similarity index 100%
+rename from stackstrap/meta.yml
+rename to stackstrap.yml
