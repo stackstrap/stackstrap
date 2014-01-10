@@ -84,7 +84,7 @@ class Template(object):
         self.log.debug("Validating template: %s" % self.name)
 
         try:
-            self.repository = Repository(self.url, self.ref)
+            self.repository = Repository(self.url)
         except sh.ErrorReturnCode as e:
             error_msg = "Failed to setup the repository (%s) \
                          for our template (%s): %s" % (
