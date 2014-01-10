@@ -1,2 +1,3 @@
 0000000000000000000000000000000000000000 1b73a263eaf0dc84c4736c1cc269c182ebcf6c6d Evan Borgstrom <evan@fatbox.ca> 1388635899 -0500	commit (initial): Template used for testing
 1b73a263eaf0dc84c4736c1cc269c182ebcf6c6d f3a9afc171cee6b7b00e168b103f4a4ac0747adb Evan Borgstrom <evan@fatbox.ca> 1388637273 -0500	commit: Bye
+f3a9afc171cee6b7b00e168b103f4a4ac0747adb d9265cfb87b5a89e1d1767b37fdf6522699be7f9 Brent Smyth <brent@fatbox.ca> 1389380960 -0500	commit: Renamed meta.yml to stackstrap.yml

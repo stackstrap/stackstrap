@@ -5,3 +5,5 @@
 	logallrefupdates = true
 	ignorecase = true
 	precomposeunicode = false
+[prompt]
+	showinfo = true
