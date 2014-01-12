@@ -38,9 +38,9 @@ class Template(object):
     def available(cls):
         "Return available templates in our template directory"
         templates = []
-        for root, folders, files in os.walk(template_dir()):
-            for template in folders:
-                templates.append(template)
+        for name in os.listdir(template_dir()):
+            if os.path.isdir(os.path.join(template_dir(), name)):
+                templates.append(name)
 
         return templates
 
