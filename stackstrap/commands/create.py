@@ -47,12 +47,12 @@ class Create(Command):
 
 
     def main(self, args):
-        template = Template.load(args.template)
-        if template is None:
+        template = Template(args.template)
+        if not template.exists:
             raise CommandError("Invalid template: %s" % args.template)
 
         try:
-            project = Project(args.name, template)
-            project.create()
+            project = Project(args.name)
+            project.create(template)
         except ProjectException as e:
             raise CommandError(str(e))
