@@ -13,44 +13,41 @@ class ProjectException(Exception):
 
 
 class Project(object):
-    def __init__(self, name, template):
+    def __init__(self, name):
         self.log = logging.getLogger("project")
 
         self.name = name
-        self.template = template
 
         # for backwards compatibility
         self.short_name = self.name
 
-    def create(self):
+    def create(self, template):
         if os.path.exists(self.name):
             raise ProjectException(
                 "The specified name '{name}' already exists".format(
                     name=self.name
                 ))
 
-        if not self.template.validated:
-            self.template.validate()
+        if not template.validated:
+            template.validate()
 
         self.log.info(
             "Creating a new project named '{name}' \
             using {template} as the template...".format(
             name=self.name,
-            template=self.template.name
+            template=template.name
         ))
 
-        # access the repository and archive it to our destination project name
-        self.template.archive_to(self.name)
+        # copy our template to the new project name
+        template.copy_to(self.name)
 
         # build our global context
         render_context = {
             'name': self.name,
-            'box_url': self.template.box,
-            'box_name': self.template.box_name,
 
             # for backwards compatibility
             'project': self,
-            'template': self.template,
+            'template': template,
         }
 
         # create our jinja template interface
