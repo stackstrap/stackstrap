@@ -57,6 +57,34 @@ class Template(object):
         "Returns true or false if this template exists in our saved templates"
         return os.path.exists(template_path(self.name))
 
+    def create(self):
+        raise Exception("This is not done and needs to be tested")
+
+        # recurse over our template and copy it in into place
+        self.log.debug("Copying project template into place...")
+
+        base_dir = os.path.dirname(
+            os.path.abspath(
+                inspect.getfile(
+                    inspect.currentframe()
+                    )))
+        template_dir = os.path.abspath(
+            os.path.join(base_dir, "project_template")
+            )
+        self.log.debug("Processing: {0}".format(template_dir))
+
+        for root, folders, files in os.walk(template_dir):
+            relative_dir = root.replace(template_dir, '.')
+            self.log.debug(relative_dir)
+
+            for f in files:
+                self.log.debug(os.path.join(relative_dir, f))
+
+                shutil.copyfile(os.path.join(root, f), path(relative_dir, f))
+
+            for f in folders:
+                mkdir(relative_dir, f)
+
     def setup(self, url, ref):
         "Archives our repository to our path and validates the template"
         if self.exists:

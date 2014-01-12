@@ -76,59 +76,10 @@ class Project(object):
             with open(source, 'w') as f:
                 f.write(jinja.render_string(data))
 
-        # recurse over our template and copy it in into place
-        self.log.debug("Copying project template into place...")
-
-        base_dir = os.path.dirname(
-            os.path.abspath(
-                inspect.getfile(
-                    inspect.currentframe()
-                    )))
-        template_dir = os.path.abspath(
-            os.path.join(base_dir, "project_template")
-            )
-        self.log.debug("Processing: {0}".format(template_dir))
-
-        for root, folders, files in os.walk(template_dir):
-            relative_dir = root.replace(template_dir, '.')
-            self.log.debug(relative_dir)
-
-            for f in files:
-                self.log.debug(os.path.join(relative_dir, f))
-
-                shutil.copyfile(os.path.join(root, f), path(relative_dir, f))
-                try:
-                    render_in_place(relative_dir, f)
-                except UnicodeDecodeError:
-                    self.log.warn(
-                        "Failed to render template due to \
-                        unicode errors: {0}".format(
-                        path(relative_dir, f)
-                    ))
-
-            for f in folders:
-                mkdir(relative_dir, f)
-
         # read the metadata
         # it must be processed as a template, then loaded as YAML
         self.log.debug("Loading template metadata...")
         metadata = yaml.load(jinja.render_file('stackstrap.yml'))
-
-        # move the salt files into place
-        if os.path.exists(path('salt', 'state.sls')):
-            self.log.debug("Copying template state  \
-                           file to salt/root/%s.sls" % self.name)
-            shutil.copyfile(
-                path('salt', 'state.sls'),
-                path('salt', 'root', '%s.sls' % self.name)
-            )
-        if os.path.exists(path('salt', 'pillar.sls')):
-            self.log.debug("Copying template pillar  \
-                           file to salt/pillar/%s.sls" % self.name)
-            shutil.copyfile(
-                path('salt', 'pillar.sls'),
-                path('salt', 'pillar', '%s.sls' % self.name)
-            )
 
         # iterate the files to parse with Jinja templates
         self.log.debug("Processing file templates...")
