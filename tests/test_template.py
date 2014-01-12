@@ -19,7 +19,7 @@ missing_repo_url = 'file://{0}/test_template_missing/'.format(os.path.dirname(__
 
 def make_template(template_url=repo_url, ref='master'):
     template = Template('test-template')
-    template.create(template_url, ref)
+    template.setup(template_url, ref)
     return template
 
 

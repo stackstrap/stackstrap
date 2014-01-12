@@ -47,6 +47,6 @@ class Add(Command):
                 if response not in ('y', 'Y', 'yes', 'YES', 'Yes'):
                     return
 
-        template.create(args.url, args.ref)
+        template.setup(args.url, args.ref)
 
         self.log.info("Created new template: %s" % args.name)
