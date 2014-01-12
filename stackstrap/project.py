@@ -56,17 +56,6 @@ class Project(object):
             file_loader_paths=[os.path.abspath(self.name)]
         )
 
-        def mkdir(*parts):
-            path = os.path.join(self.name, *parts)
-            self.log.debug("Making folder \""+path+"\"...")
-            try:
-                os.mkdir(path, 0755)
-            except OSError as exc:  # Python >2.5
-                if exc.errno == errno.EEXIST and os.path.isdir(path):
-                    self.log.debug("Folder exists moving on...")
-                else:
-                    raise
-
         def path(*parts):
             return os.path.join(self.name, *parts)
 
@@ -80,6 +69,13 @@ class Project(object):
         # it must be processed as a template, then loaded as YAML
         self.log.debug("Loading template metadata...")
         metadata = yaml.load(jinja.render_file('stackstrap.yml'))
+
+        # iterate through the cleanup paths
+        self.log.debug("Processing cleanup...")
+        cleanup_paths = metadata.get("cleanup", [])
+        for p in cleanup_paths:
+            self.log.debug(p)
+            shutil.rmtree(path(p))
 
         # iterate the files to parse with Jinja templates
         self.log.debug("Processing file templates...")
