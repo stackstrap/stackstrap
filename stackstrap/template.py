@@ -1,3 +1,4 @@
+import inspect
 import logging
 import os
 import sh
@@ -44,6 +45,48 @@ class Template(object):
 
         return templates
 
+    @classmethod
+    def create(cls, path):
+        if os.path.exists(path):
+            raise TemplateExists("A template already exists at: %s" % path)
+
+        # recurse over our template and copy it in into place
+        log = logging.getLogger('template')
+        log.info("Creating a new template: %s" % path)
+
+        settings.mkdir_p(path)
+
+        base_dir = os.path.dirname(
+            os.path.abspath(
+                inspect.getfile(
+                    inspect.currentframe()
+                    )))
+        template_dir = os.path.abspath(
+            os.path.join(base_dir, "project_template")
+            )
+        log.debug("Processing: %s" % template_dir)
+
+        def _path(*parts):
+            return os.path.join(path, *parts)
+        
+        def mkdir(*parts):
+            path = os.path.join(name, *parts)
+            log.debug("Making folder '%s'..." % path)
+            settings.mkdir_p(path)
+
+        for root, folders, files in os.walk(template_dir):
+            relative_dir = root.replace(template_dir, '.')
+            log.debug(relative_dir)
+
+            for f in files:
+                log.debug(os.path.join(relative_dir, f))
+
+                shutil.copyfile(os.path.join(root, f), _path(relative_dir, f))
+
+            for f in folders:
+                mkdir(relative_dir, f)
+
+
     def __init__(self, name):
         self.log = logging.getLogger("template")
 
@@ -56,34 +99,6 @@ class Template(object):
     def exists(self):
         "Returns true or false if this template exists in our saved templates"
         return os.path.exists(template_path(self.name))
-
-    def create(self):
-        raise Exception("This is not done and needs to be tested")
-
-        # recurse over our template and copy it in into place
-        self.log.debug("Copying project template into place...")
-
-        base_dir = os.path.dirname(
-            os.path.abspath(
-                inspect.getfile(
-                    inspect.currentframe()
-                    )))
-        template_dir = os.path.abspath(
-            os.path.join(base_dir, "project_template")
-            )
-        self.log.debug("Processing: {0}".format(template_dir))
-
-        for root, folders, files in os.walk(template_dir):
-            relative_dir = root.replace(template_dir, '.')
-            self.log.debug(relative_dir)
-
-            for f in files:
-                self.log.debug(os.path.join(relative_dir, f))
-
-                shutil.copyfile(os.path.join(root, f), path(relative_dir, f))
-
-            for f in folders:
-                mkdir(relative_dir, f)
 
     def setup(self, url, ref):
         "Archives our repository to our path and validates the template"

@@ -24,33 +24,44 @@ def make_template(template_url=repo_url, ref='master'):
 
 
 class TemplateTestCase(StackStrapTestCase):
-    def test_template_validate(self):
+    def test_creating_templates(self):
+        orig_dir = os.getcwd()
+        tmp_dir = tempfile.mkdtemp()
+        os.chdir(tmp_dir)
+
+        cli = StackStrapCLI()
+
+        self.assertFalse(os.path.exists('testing'))
+        cli.main(['template', 'create', 'testing'])
+        self.assertTrue(os.path.exists('testing'))
+        self.assertTrue(os.path.exists('testing/Vagrantfile'))
+
+    def test_validating_templates(self):
         template = make_template()
-        template.validate()
         assert template.meta['template_name'] == 'Test Template'
         assert template.meta['template_description'] == 'Testing'
         assert template.meta['file_templates'] == ['README']
         assert template.meta['path_templates'] == [{'README': 'README.transformed'}]
 
 
-    def test_template_validate_fail_bad_meta(self):
+    def test_validation_should_fail_on_bad_meta(self):
         self.assertRaises(TemplateMetaException, make_template, bad_repo_url)
 
-    def test_template_validate_fail_bad_repo(self):
+    def test_validation_should_fail_on_bad_meta(self):
         self.assertRaises(TemplateRepoException, make_template, missing_repo_url)
 
-    def test_template_create_exists(self):
+    def test_creating_a_template_twice_should_fail(self):
         make_template()
         self.assertRaises(TemplateExists, make_template)
 
-    def test_template_delete(self):
+    def test_deleting_a_template(self):
         template = make_template()
         self.assertTrue(os.path.exists(template.path))
         template.delete()
         self.assertFalse(os.path.exists(template.path))
 
 
-    def test_template_available(self):
+    def test_available(self):
         make_template()
         self.assertEqual(Template.available(), ['test-template'])
 
