@@ -57,7 +57,7 @@ class Template(object):
         "Returns true or false if this template exists in our saved templates"
         return os.path.exists(template_path(self.name))
 
-    def create(self, url, ref):
+    def setup(self, url, ref):
         "Archives our repository to our path and validates the template"
         if self.exists:
             raise TemplateExists("A template named '%s' already exists" % self.name)
