@@ -8,7 +8,6 @@ class CommandLoader(object):
     CommandLoader is a mixin that loads a tuple of Commands and creates them
     each as a subparser, calling their setup_parser method
     """
-    commands = {}
     commands_to_load = tuple()
     subparsers = None
 
@@ -18,6 +17,7 @@ class CommandLoader(object):
             raise NotImplementedError("The class %s needs to have a 'subparsers' attribute prior to calling load_commands" %
                                       self.__class__.__name__)
 
+        self.commands = {}
         for cls in self.commands_to_load:
             command = cls()
             parser = self.subparsers.add_parser(
