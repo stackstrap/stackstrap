@@ -20,13 +20,22 @@ with templates and a macro driven `community repository of Salt states`_.
 Getting Started
 ---------------
 
-Install::
+Install:
+
+.. code:: console
+
     sudo pip install stackstrap
 
-Add a Template::
+Add a Template:
+
+.. code:: console
+
     stackstrap template add django https://github.com/openops/stackstrap-django.git
 
-Create a new Project::
+Create a new Project:
+
+.. code:: console
+
     stackstrap create mynewproject django
 
 Documentation
