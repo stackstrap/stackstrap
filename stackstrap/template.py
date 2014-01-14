@@ -9,6 +9,7 @@ import yaml
 from stackstrap.config import settings
 from stackstrap.repository import Repository
 
+MASTER_TEMPLATE_URL = 'https://github.com/openops/stackstrap-master-template.git'
 
 def template_dir(*parts):
     return settings.mkdir('templates', *parts)
@@ -38,54 +39,10 @@ class Template(object):
     @classmethod
     def available(cls):
         "Return available templates in our template directory"
-        templates = []
-        for root, folders, files in os.walk(template_dir()):
-            for template in folders:
-                templates.append(template)
-
-        return templates
-
-    @classmethod
-    def create(cls, path):
-        if os.path.exists(path):
-            raise TemplateExists("A template already exists at: %s" % path)
-
-        # recurse over our template and copy it in into place
-        log = logging.getLogger('template')
-        log.info("Creating a new template: %s" % path)
-
-        settings.mkdir_p(path)
-
-        base_dir = os.path.dirname(
-            os.path.abspath(
-                inspect.getfile(
-                    inspect.currentframe()
-                    )))
-        template_dir = os.path.abspath(
-            os.path.join(base_dir, "project_template")
-            )
-        log.debug("Processing: %s" % template_dir)
-
-        def _path(*parts):
-            return os.path.join(path, *parts)
-        
-        def mkdir(*parts):
-            path = os.path.join(name, *parts)
-            log.debug("Making folder '%s'..." % path)
-            settings.mkdir_p(path)
-
-        for root, folders, files in os.walk(template_dir):
-            relative_dir = root.replace(template_dir, '.')
-            log.debug(relative_dir)
-
-            for f in files:
-                log.debug(os.path.join(relative_dir, f))
-
-                shutil.copyfile(os.path.join(root, f), _path(relative_dir, f))
-
-            for f in folders:
-                mkdir(relative_dir, f)
-
+        return [
+            item
+            for item in os.listdir(template_dir())
+        ]
 
     def __init__(self, name):
         self.log = logging.getLogger("template")
@@ -149,7 +106,6 @@ class Template(object):
             raise TemplateMetaException(error_msg)
 
         self.log.debug("Parsing meta-data...")
-        self.log.debug(meta_data)
         try:
             self.meta = yaml.load(meta_data)
         except yaml.error.YAMLError as e:
@@ -157,6 +113,19 @@ class Template(object):
                          %s" % (meta_path, e)
             self.log.error(error_msg)
             raise TemplateMetaException(error_msg)
+
+        required_attrs = (
+            'template_name',
+            'template_description'
+        )
+
+        for attr in required_attrs:
+            if attr not in self.meta:
+                error_msg = "Missing template meta data: %s" % attr
+                self.log.error(error_msg)
+                raise TemplateMetaException(error_msg)
+
+            self.log.debug(" - %s: %s" % (attr, self.meta[attr]))
 
         self.validated = True
         self.log.debug("Template validated")
