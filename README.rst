@@ -38,6 +38,18 @@ Create a new Project:
 
     stackstrap create mynewproject django
 
+Change into the new folder:
+
+.. code:: console
+
+    cd mynewproject
+
+Vagrant Up:
+
+.. code:: console
+
+    vagrant up
+
 Documentation
 -------------
 Full documentation can be found at RTD: http://stackstrap.readthedocs.org
