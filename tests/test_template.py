@@ -76,6 +76,10 @@ class TemplateTestCase(StackStrapTestCase):
         make_template()
         self.assertEqual(Template.available(), ['test-template'])
 
+        # we already know available works, this just ensures we get closer to
+        # 100% coverage
+        cli = StackStrapCLI()
+        cli.main(['template', 'list'])
 
     def test_template_cli(self):
         cli = StackStrapCLI()
