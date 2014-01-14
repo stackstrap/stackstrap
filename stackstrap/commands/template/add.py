@@ -28,24 +28,13 @@ class Add(Command):
             help='The GIT ref of the template to use when creating projects, defaults to master',
             default='master'
         )
-        self.parser.add_argument(
-            '-f', '--force',
-            dest='force',
-            action='store_true',
-            help='Do not prompt when over-writing an existing template',
-            default=False
-        )
 
     def main(self, args):
         template = Template(args.name)
 
         if template.exists:
-            if args.force:
-                self.log.info("Template '%s' already exists. Force has been specified, overwriting it.")
-            else:
-                response = raw_input("The template '%s' already exists. Overwrite it? [y/n]:" % args.name)
-                if response not in ('y', 'Y', 'yes', 'YES', 'Yes'):
-                    return
+            self.log.error("The template '%s' already exists")
+            return
 
         template.setup(args.url, args.ref)
 
