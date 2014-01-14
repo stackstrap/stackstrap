@@ -27,10 +27,6 @@ ready environment to play with in minutes.
 
 Here be dragons
 ---------------
-StackStrap is currently **alpha** quality software and is undergoing rapid
-change. The interface, salt integration, template format and all other pieces
-of the system are in flux and may change at any time without notice.
-
 January 1st, 2014: New year, new approach. We've done a complete 180 degree
 turn on the approach for how stackstrap works. If you used it prior to Jan 1
 2014 please make sure to read the docs again to familiarize yourself with the
