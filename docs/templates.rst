@@ -115,17 +115,6 @@ Salt Files
 The salt macros and pillar data are stored in a folder called `salt` at the
 root of the project.
 
-state.sls
-~~~~~~~~~
-The state data should utilize the available states and macros that can be
-found in the `community repository`_.
-
-
-pillar.sls
-~~~~~~~~~~
-Pillar data is meant to be configuration data for your Template that can be
-used in the state file.
-
 TODO: Document this better.
 
 
