@@ -52,6 +52,17 @@ Example::
         application server.
 
 
+Cleaning up files
++++++++++++++++++
+You may have files in your Template which you do not want in your Projects.
+Perhaps you have a README that is only for the Template and another that
+you want to use for the Project. In this case just remove the README here
+and move the other one into place with a path transform (below)::
+
+    stackstrap:
+      cleanup:
+        - README
+
 Parsing files as Jinja templates
 +++++++++++++++++++++++++++++++++
 To tell StackStrap that a file should be passed through the Jinja template
@@ -77,6 +88,7 @@ available context variables, as the value::
 
     stackstrap:
       path_templates:
+        - PROJECT-README: README
         - 'project_app/something/else': 'project_app/something/{{ project.id }}'
         - 'project_app': '{{ project.slug }}_app'
 
