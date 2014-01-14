@@ -57,7 +57,7 @@ class Project(object):
         )
 
         def path(*parts):
-            return os.path.join(self.name, *parts)
+            return os.path.abspath(os.path.join(self.name, *parts))
 
         def render_in_place(*parts):
             source = path(*parts)
@@ -75,7 +75,13 @@ class Project(object):
         cleanup_paths = metadata.get("cleanup", [])
         for p in cleanup_paths:
             self.log.debug(p)
-            shutil.rmtree(path(p))
+            cleanup_path = path(p)
+            if os.path.isdir(cleanup_path):
+                shutil.rmtree(cleanup_path)
+            elif os.path.exists(cleanup_path):
+                os.remove(cleanup_path)
+            else:
+                self.log.error("Unable to cleanup: %s" % cleanup_path)
 
         # iterate the files to parse with Jinja templates
         self.log.debug("Processing file templates...")
@@ -99,8 +105,6 @@ class Project(object):
         # now destroy the stackstrap.yml file as it's no longer needed
         shutil.rmtree(path('stackstrap.yml'), ignore_errors=True)
 
-        self.log.info(
-            "Done!\nYou can now 'vagrant up' your development \
-            environment from the {name} folder".format(
+        self.log.info("Done! The project {name} has been created".format(
             name=self.name
         ))

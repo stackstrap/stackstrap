@@ -11,11 +11,14 @@ from stackstrap.template import Template, TemplateExists, \
 from . import StackStrapTestCase
 
 
-# setup our repo & cache urls & dirs
-repo_url = 'file://{0}/test_template/'.format(os.path.dirname(__file__))
-bad_repo_url = 'file://{0}/test_template_bad/'.format(os.path.dirname(__file__))
-missing_repo_url = 'file://{0}/test_template_missing/'.format(os.path.dirname(__file__))
-
+# setup repos & branches
+# for the missing repo URL we need to supply an empty username & password so
+# GIT doesn't prompt when we try to clone it
+repo_url = 'https://github.com/openops/stackstrap-test-template.git'
+missing_repo_url = 'https://:@github.com/openops/stackstrap-non-existant-template.git'
+bad_repo_url = 'FAIL:FAIL/F/A/I/L'
+bad_meta_branch = 'bad-meta-for-tests'
+missing_meta_branch = 'missing-meta-for-tests'
 
 def make_template(template_url=repo_url, ref='master'):
     template = Template('test-template')
@@ -30,25 +33,34 @@ class TemplateTestCase(StackStrapTestCase):
         os.chdir(tmp_dir)
 
         cli = StackStrapCLI()
+        master = Template('master-template')
 
-        self.assertFalse(os.path.exists('testing'))
+        self.assertFalse(os.path.exists('./testing'))
+        self.assertFalse(master.exists)
         cli.main(['template', 'create', 'testing'])
-        self.assertTrue(os.path.exists('testing'))
+        self.assertTrue(os.path.exists('./testing'))
         self.assertTrue(os.path.exists('testing/Vagrantfile'))
+        self.assertTrue(master.exists)
 
     def test_validating_templates(self):
         template = make_template()
-        assert template.meta['template_name'] == 'Test Template'
-        assert template.meta['template_description'] == 'Testing'
-        assert template.meta['file_templates'] == ['README']
-        assert template.meta['path_templates'] == [{'README': 'README.transformed'}]
+        self.assertEqual(template.meta['template_name'], 'Your template')
+        self.assertEqual(template.meta['template_description'], 'Add your description here.')
+        self.assertEqual(template.meta['cleanup'], ['README.rst'])
+        self.assertEqual(template.meta['file_templates'], ['Vagrantfile', 'salt/pillar/stackstrap.sls'])
+        self.assertEqual(template.meta['path_templates'], [{'PROJECT-README': 'README'}])
 
+    def test_should_fail_on_bad_meta(self):
+        self.assertRaises(TemplateMetaException, make_template, repo_url, bad_meta_branch)
 
-    def test_validation_should_fail_on_bad_meta(self):
-        self.assertRaises(TemplateMetaException, make_template, bad_repo_url)
+    def test_should_fail_on_missing_meta(self):
+        self.assertRaises(TemplateMetaException, make_template, repo_url, missing_meta_branch)
 
-    def test_validation_should_fail_on_bad_meta(self):
+    def test_should_fail_on_missing_repo(self):
         self.assertRaises(TemplateRepoException, make_template, missing_repo_url)
+
+    def test_should_fail_on_bad_repo(self):
+        self.assertRaises(TemplateRepoException, make_template, bad_repo_url)
 
     def test_creating_a_template_twice_should_fail(self):
         make_template()
@@ -62,6 +74,7 @@ class TemplateTestCase(StackStrapTestCase):
 
 
     def test_available(self):
+        self.assertEqual(Template.available(), [])
         make_template()
         self.assertEqual(Template.available(), ['test-template'])
 
