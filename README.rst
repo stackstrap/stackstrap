@@ -17,6 +17,18 @@ with templates and a macro driven `community repository of Salt states`_.
            :target: https://crate.io/packages/stackstrap/
            :alt: Number of PyPI downloads
 
+Getting Started
+---------------
+
+Install::
+    sudo pip install stackstrap
+
+Add a Template::
+    stackstrap template add django https://github.com/openops/stackstrap-django.git
+
+Create a new Project::
+    stackstrap create mynewproject django
+
 Documentation
 -------------
 Full documentation can be found at RTD: http://stackstrap.readthedocs.org
