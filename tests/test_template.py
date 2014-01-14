@@ -12,10 +12,8 @@ from . import StackStrapTestCase
 
 
 # setup repos & branches
-# for the missing repo URL we need to supply an empty username & password so
-# GIT doesn't prompt when we try to clone it
 repo_url = 'https://github.com/openops/stackstrap-test-template.git'
-missing_repo_url = 'https://:@github.com/openops/stackstrap-non-existant-template.git'
+missing_repo_url = 'https://fail:fail@github.com/openops/stackstrap-non-existant-template.git'
 bad_repo_url = 'FAIL:FAIL/F/A/I/L'
 bad_meta_branch = 'bad-meta-for-tests'
 missing_meta_branch = 'missing-meta-for-tests'
