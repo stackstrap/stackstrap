@@ -14,8 +14,8 @@ class Remove(Command):
         )
 
     def main(self, args):
-        template = Template.load(args.name)
-        if not template:
+        template = Template(args.name)
+        if not template.exists:
             raise CommandError("Invalid template name: %s" % args.name)
 
         self.log.info("Removing template '%s'" % template.name)

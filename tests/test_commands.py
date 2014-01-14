@@ -11,8 +11,6 @@ class CLITestCase(StackStrapTestCase):
     def test_cli_failure(self):
         cli = StackStrapCLI()
 
-        # use assertRaises as a context manager so we get the exit code
-        # see: http://stackoverflow.com/a/15672165
         try:
             cli.main(['template', 'remove', 'doesntexist'])
             raise Exception("This shouldn't be reached")
