@@ -105,10 +105,8 @@ Available context variables
 When the pillar data and your templates are parsed the following variables are
 made available in the context:
 
-* **`project`** - the Project object. See the `Project source code` for all of
-  the available attributes you can access on this object.
-* **`master`** - the hostname of your master instace of StackStrap.
-* **`master_ip`** - the IP address of your master instance of Stackstrap.
+* **`name`** - The computer friendly name which you chose for the project. 
+  You can use this to seed you project's files and paths.
 
 Salt Files
 ----------
