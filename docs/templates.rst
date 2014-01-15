@@ -106,7 +106,7 @@ When the pillar data and your templates are parsed the following variables are
 made available in the context:
 
 * **`name`** - The computer friendly name which you chose for the project. 
-  You can use this to seed you project's files and paths.
+  You can use this to seed your project's files and paths.
 
 Salt Files
 ----------
