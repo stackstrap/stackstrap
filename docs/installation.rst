@@ -14,22 +14,19 @@ instructions.
 Installing StackStrap
 ---------------------
 It's very easy to install StackStrap as it's a standard Python package that's
-available `on the cheeseshop`_. The documentation will install it globally
-using ``pip`` but you can certainly install it to a virtualenv if you desire.
+available `on the cheeseshop`_.
+
+The documentation will install it globally using ``easy_install`` but you can 
+certainly install it using ``pip`` to a virtualenv if you desire.
 
 Easy Installation
 ~~~~~~~~~~~~~~~~~
-To install StackStrap we're going to be using the ``pip`` script as root so
-that StackStrap will be globally available.
-
-.. note:: Linux users may need to install pip
-   If you're a Linux user you may need to install a package so that the
-   ``pip`` command is available to you. On Debian and it's derivatives
-   (Ubuntu, etc) you can install the ``python-pip`` package.
+To install StackStrap we're going to be using the ``easy_install`` command as
+root so that StackStrap will be globally available.
 
 Open up a terminal and run the following command::
 
-    sudo pip install stackstrap
+    sudo easy_install stackstrap
 
 This will install StackStrap and all of it's dependencies. It will place a
 command named ``stackstrap`` in your ``$PATH`` so that you can use it from
