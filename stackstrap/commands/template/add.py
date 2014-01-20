@@ -1,4 +1,4 @@
-from stackstrap.commands import Command
+from stackstrap.commands import Command, CommandError
 from stackstrap.template import Template
 
 class Add(Command):
@@ -33,8 +33,8 @@ class Add(Command):
         template = Template(args.name)
 
         if template.exists:
-            self.log.error("The template '%s' already exists")
-            return
+            error_msg = "The template '%s' already exists" % args.name
+            raise CommandError(error_msg)
 
         template.setup(args.url, args.ref)
 
