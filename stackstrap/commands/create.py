@@ -18,8 +18,6 @@ def name_type(value):
     if not re.match(r'[a-z0-9][a-z0-9\-]+', value, re.I):
         raise argparse.ArgumentTypeError(
             "Project names can only contain letters, numbers and dashes."
-            "This is a restriction imposed because the project name is used as"
-            "the hostname for Vagrant"
         )
 
     return value

@@ -60,6 +60,15 @@ class TemplateTestCase(StackStrapTestCase):
     def test_should_fail_on_bad_repo(self):
         self.assertRaises(TemplateRepoException, make_template, bad_repo_url)
 
+    def test_cli_creating_a_template_twice_should_fail(self):
+        make_template()
+        cli = StackStrapCLI()
+        try:
+            cli.main(['template', 'add', 'test-template', repo_url])
+            raise Exception("This shouldn't be reached")
+        except SystemExit as e:
+            self.assertEqual(e.code, 1)
+
     def test_creating_a_template_twice_should_fail(self):
         make_template()
         self.assertRaises(TemplateExists, make_template)
