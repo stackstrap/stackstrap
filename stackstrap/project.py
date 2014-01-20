@@ -103,7 +103,7 @@ class Project(object):
                           path(path_template[orig_path]))
 
         # now destroy the stackstrap.yml file as it's no longer needed
-        shutil.rmtree(path('stackstrap.yml'), ignore_errors=True)
+        os.unlink(path('stackstrap.yml'))
 
         self.log.info("Done! The project {name} has been created".format(
             name=self.name
