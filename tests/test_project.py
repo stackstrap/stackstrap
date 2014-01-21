@@ -11,7 +11,7 @@ from stackstrap.repository import Repository
 
 from . import StackStrapTestCase
 
-repo_url = 'https://github.com/freesurface/stackstrap-project-template.git'
+repo_url = 'https://github.com/freesurface/stackstrap-test-template.git'
 
 class ProjectTestCase(StackStrapTestCase):
     def test_project_creation(self):
