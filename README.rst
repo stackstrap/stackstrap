@@ -3,11 +3,11 @@ StackStrap
 Making development more awesome by combining the power of Salt_ and Vagrant_
 with templates and a macro driven `community repository of Salt states`_.
 
-.. image:: https://api.travis-ci.org/openops/stackstrap.png?branch=master
-           :target: https://travis-ci.org/openops/stackstrap
+.. image:: https://api.travis-ci.org/freesurface/stackstrap.png?branch=master
+           :target: https://travis-ci.org/freesurface/stackstrap
 
-.. image:: https://coveralls.io/repos/openops/stackstrap/badge.png
-           :target: https://coveralls.io/r/openops/stackstrap
+.. image:: https://coveralls.io/repos/freesurface/stackstrap/badge.png
+           :target: https://coveralls.io/r/freesurface/stackstrap
 
 .. image:: https://pypip.in/v/stackstrap/badge.png
            :target: https://crate.io/packages/stackstrap/
@@ -30,7 +30,7 @@ Add a Template:
 
 .. code:: console
 
-    stackstrap template add django https://github.com/openops/stackstrap-django.git
+    stackstrap template add django https://github.com/freesurface/stackstrap-django.git
 
 Create a new Project:
 
@@ -59,6 +59,6 @@ The source for the documentation is in the `docs` directory.
 
 .. _Salt: http://saltstack.org/
 .. _Vagrant: http://vagrantup.com/
-.. _community repository of Salt states: http://github.com/openops/stackstrap-salt/
+.. _community repository of Salt states: http://github.com/freesurface/stackstrap-salt/
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
