@@ -1,5 +1,23 @@
 # [Changelog](https://github.com/freesurface/stackstrap/releases)
 
+## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.0...0.2.1)
+
+* [e9bb5ce](https://github.com/freesurface/stackstrap/commit/e9bb5ce) Updated test to use test project repo's new location
+* [3e95f51](https://github.com/freesurface/stackstrap/commit/3e95f51) Switching all paths to match new Org name
+* [6b0271e](https://github.com/freesurface/stackstrap/commit/6b0271e) Improve test coverage
+* [19b2368](https://github.com/freesurface/stackstrap/commit/19b2368) Remove stackstrap.yml. Fix #51
+* [8842af5](https://github.com/freesurface/stackstrap/commit/8842af5) Add further installation documentation
+* [9fb69a2](https://github.com/freesurface/stackstrap/commit/9fb69a2) Most vanilla systems do not have pip, switch to easy_install
+* [51a25f4](https://github.com/freesurface/stackstrap/commit/51a25f4) Fixed typo [ci skip]
+* [7c4db2e](https://github.com/freesurface/stackstrap/commit/7c4db2e) Updated available context variables in docs
+* [00c2db1](https://github.com/freesurface/stackstrap/commit/00c2db1) Removing old salt doc content until we update with a link to other docs
+* [6dfa8c7](https://github.com/freesurface/stackstrap/commit/6dfa8c7) added cleanup to docs
+* [f925414](https://github.com/freesurface/stackstrap/commit/f925414) Adding complete simple workflow to README
+* [379a17d](https://github.com/freesurface/stackstrap/commit/379a17d) We don't work on python 3 yet. [ci skip]
+* [d71f981](https://github.com/freesurface/stackstrap/commit/d71f981) Run tests on all different python versions
+* [e98609e](https://github.com/freesurface/stackstrap/commit/e98609e) Remove note about alpha software from the docs
+* [25206ae](https://github.com/freesurface/stackstrap/commit/25206ae) Bumping dev status to Beta for the next release
+
 ## [0.2.0](https://github.com/freesurface/stackstrap/compare/0.1.2...0.2.0)
 
 * [bf30011](https://github.com/freesurface/stackstrap/commit/bf30011) Format readme properly
