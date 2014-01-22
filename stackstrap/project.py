@@ -1,6 +1,4 @@
-import inspect
 import logging
-import errno
 import os
 import shutil
 import yaml
@@ -99,9 +97,6 @@ class Project(object):
                 )
                 os.rename(path(orig_path),
                           path(path_template[orig_path]))
-
-        # now destroy the stackstrap.yml file as it's no longer needed
-        os.unlink(path('stackstrap.yml'))
 
         self.log.info("Done! The project {name} has been created".format(
             name=self.name

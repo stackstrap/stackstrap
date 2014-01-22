@@ -11,7 +11,7 @@ from stackstrap.repository import Repository
 
 from . import StackStrapTestCase
 
-repo_url = 'https://github.com/openops/stackstrap-project-template.git'
+repo_url = 'https://github.com/freesurface/stackstrap-test-template.git'
 
 class ProjectTestCase(StackStrapTestCase):
     def test_project_creation(self):
@@ -29,7 +29,6 @@ class ProjectTestCase(StackStrapTestCase):
             assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
             assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README"))
             assert not os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README.rst"))
-            assert not os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "stackstrap.yml"))
         finally:
             os.chdir(orig_dir)
             shutil.rmtree(tmp_dir)
