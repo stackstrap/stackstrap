@@ -82,7 +82,6 @@ class Project(object):
         # iterate the files to parse with Jinja templates
         self.log.debug("Processing file templates...")
         file_template_paths = metadata.get("file_templates", [])
-        file_template_paths.append("stackstrap.yml")
         for p in file_template_paths:
             self.log.debug(p)
             render_in_place(p)
