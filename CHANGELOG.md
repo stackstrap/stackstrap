@@ -1,5 +1,11 @@
 # [Changelog](https://github.com/freesurface/stackstrap/releases)
 
+## [0.2.2](https://github.com/freesurface/stackstrap/compare/0.2.1...0.2.2)
+
+* [32c6850](https://github.com/freesurface/stackstrap/commit/32c6850) Removing redundant jinja parse of stackstrap.yml
+* [3098752](https://github.com/freesurface/stackstrap/commit/3098752) No longer testing to see if stackstrap.yml has been deleted
+* [6025e20](https://github.com/freesurface/stackstrap/commit/6025e20) Stopping the auto removal of stackstrap.yml, specify in template instead
+
 ## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.0...0.2.1)
 
 * [e9bb5ce](https://github.com/freesurface/stackstrap/commit/e9bb5ce) Updated test to use test project repo's new location
