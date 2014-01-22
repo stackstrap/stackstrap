@@ -22,31 +22,31 @@ Getting Started
 
 Install:
 
-.. code:: console
+.. code::
 
     sudo easy_install stackstrap
 
 Add a Template:
 
-.. code:: console
+.. code::
 
     stackstrap template add django https://github.com/freesurface/stackstrap-django.git
 
 Create a new Project:
 
-.. code:: console
+.. code::
 
     stackstrap create mynewproject django
 
 Change into the new folder:
 
-.. code:: console
+.. code::
 
     cd mynewproject
 
 Vagrant Up:
 
-.. code:: console
+.. code::
 
     vagrant up
 
@@ -105,7 +105,7 @@ CentOS 6.5
 
 64 bit:
 
-.. code:: none
+.. code::
 
     http://boxes.stackstrap.org/virtualbox/centos65-saltlatest.box
 
