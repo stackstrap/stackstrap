@@ -42,8 +42,6 @@ class Project(object):
         # build our global context
         render_context = {
             'name': self.name,
-
-            # for backwards compatibility
             'project': self,
             'template': template,
         }

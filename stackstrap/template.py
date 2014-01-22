@@ -49,6 +49,7 @@ class Template(object):
 
         self.name = name
         self.path = template_path(self.name)
+        self.meta = {}
 
         self.validated = False
 

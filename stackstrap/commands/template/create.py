@@ -29,6 +29,15 @@ class Create(Command):
             default=template_url
         )
 
+        self.parser.add_argument(
+            '-r', '--ref',
+            metavar='GIT_REF',
+            type=str,
+            help='The GIT reference to use when archiving the template. '
+                 'Defaults to master.',
+            default='master'
+        )
+
     def main(self, args):
         # this must be imported in here since StackStrapCLI is what initially
         # imports this module
@@ -40,6 +49,6 @@ class Create(Command):
             self.log.info("You are creating a new template for the first time "
                           "we will now setup a template named 'master-template' "
                           "that is used to create new templates.")
-            cli.main(['template', 'add', 'master-template', MASTER_TEMPLATE_URL])
+            cli.main(['template', 'add', 'master-template', args.template, '-r', args.ref])
 
         cli.main(['create', args.path, 'master-template'])
