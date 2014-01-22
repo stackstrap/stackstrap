@@ -49,6 +49,6 @@ class Create(Command):
             self.log.info("You are creating a new template for the first time "
                           "we will now setup a template named 'master-template' "
                           "that is used to create new templates.")
-            cli.main(['template', 'add', 'master-template', args.template, '-r', args.ref])
+            cli.main(['template', 'add', '-r', args.ref, 'master-template', args.template])
 
         cli.main(['create', args.path, 'master-template'])
