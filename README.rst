@@ -74,40 +74,54 @@ Ubuntu 12.04
     http://boxes.stackstrap.org/virtualbox/ubuntu1204-i386-saltlatest.box
 
 64 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/ubuntu1204-saltlatest.box
 
 Debian 7.3
 ++++++++++
 
 32 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/debian73-i386-saltlatest.box
 
 64 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/debian73-saltlatest.box
 
 CentOS 6.5
 ++++++++++
 
 32 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/centos65-i386-saltlatest.box
 
 64 bit:
+
 .. code:: none
+
     http://boxes.stackstrap.org/virtualbox/centos65-saltlatest.box
 
 Fedora 20
 +++++++++
 
 32 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/fedora20-i386-saltlatest.box
 
 64 bit:
-.. code:: none
+
+.. code::
+
     http://boxes.stackstrap.org/virtualbox/fedora20-saltlatest.box
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
