@@ -24,7 +24,7 @@ Install:
 
 .. code:: console
 
-    sudo pip install stackstrap
+    sudo easy_install stackstrap
 
 Add a Template:
 
