@@ -70,6 +70,7 @@ Ubuntu 12.04
 32 bit:
 
 .. code::
+
     http://boxes.stackstrap.org/virtualbox/ubuntu1204-i386-saltlatest.box
 
 64 bit:
