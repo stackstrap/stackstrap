@@ -27,8 +27,8 @@ Moreover, StackStrap is a philosophy geared towards helping teams with many diff
 points of view and skills sets work together efficiently in short time frames. System 
 management is all rolled in because of the power of Salt. This means that development 
 environments are always tailored to the current branch. It is also very keen on 
-automation, with the idea that someone just helping integrate some cool CSS transforms 
-can be ready to run as well.
+automation, with the idea that someone integrating cool CSS transforms can be ready 
+to run without distracting the team for 3 hours to get them up.
 
 Getting Started
 ---------------
