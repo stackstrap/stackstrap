@@ -78,7 +78,7 @@ Salted Boxes
 ------------
 
 Ubuntu 12.04
-++++++++++++
+^^^^^^^^^^^^
 
 32 bit:
 
@@ -93,7 +93,7 @@ Ubuntu 12.04
     http://boxes.stackstrap.org/virtualbox/ubuntu1204-saltlatest.box
 
 Debian 7.3
-++++++++++
+^^^^^^^^^^
 
 32 bit:
 
@@ -108,7 +108,7 @@ Debian 7.3
     http://boxes.stackstrap.org/virtualbox/debian73-saltlatest.box
 
 CentOS 6.5
-++++++++++
+^^^^^^^^^^
 
 32 bit:
 
@@ -123,7 +123,7 @@ CentOS 6.5
     http://boxes.stackstrap.org/virtualbox/centos65-saltlatest.box
 
 Fedora 20
-+++++++++
+^^^^^^^^^
 
 32 bit:
 
