@@ -2,26 +2,14 @@
 
 ## [0.2.2](https://github.com/freesurface/stackstrap/compare/0.2.1...0.2.2)
 
-* [4e95a5e](https://github.com/freesurface/stackstrap/commit/4e95a5e) 0.2.1
 * [043d548](https://github.com/freesurface/stackstrap/commit/043d548) Concatinating string before formatting to avoid excess white space, fixes #56
-* [53fd078](https://github.com/freesurface/stackstrap/commit/53fd078) Console highlighting was too light using console mode [ci skip]
 * [fec146c](https://github.com/freesurface/stackstrap/commit/fec146c) Done learning bout RST code blocks [ci skip]
-* [507f5b3](https://github.com/freesurface/stackstrap/commit/507f5b3) Learning RST [ci skip]
-* [fbc76fc](https://github.com/freesurface/stackstrap/commit/fbc76fc) Learning RST [ci skip]
-* [3818431](https://github.com/freesurface/stackstrap/commit/3818431) Learning RST [ci skip]
-* [2099a6f](https://github.com/freesurface/stackstrap/commit/2099a6f) Learning RST [ci skip]
 * [bc37320](https://github.com/freesurface/stackstrap/commit/bc37320) Updated readme to list available vagrant boxes
 * [ed677fb](https://github.com/freesurface/stackstrap/commit/ed677fb) Changed order which "ref" is used when called "create" from template cli
-* [7d74325](https://github.com/freesurface/stackstrap/commit/7d74325) Update README to match new quick start
-* [c31d4de](https://github.com/freesurface/stackstrap/commit/c31d4de) Not 2.2.2 yet. [ci skip]
-* [e443bdf](https://github.com/freesurface/stackstrap/commit/e443bdf) 0.2.2
 * [32c6850](https://github.com/freesurface/stackstrap/commit/32c6850) Removing redundant jinja parse of stackstrap.yml
 * [4d3b6d6](https://github.com/freesurface/stackstrap/commit/4d3b6d6) Allow specification of a ref when creating a template
 * [3098752](https://github.com/freesurface/stackstrap/commit/3098752) No longer testing to see if stackstrap.yml has been deleted
 * [6025e20](https://github.com/freesurface/stackstrap/commit/6025e20) Stopping the auto removal of stackstrap.yml, specify in template instead
-
-## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.2...0.2.1)
-
 
 ## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.0...0.2.1)
 
