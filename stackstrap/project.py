@@ -30,11 +30,13 @@ class Project(object):
             template.validate()
 
         self.log.info(
-            "Creating a new project named '{name}' \
-            using {template} as the template...".format(
-            name=self.name,
-            template=template.name
-        ))
+            (
+                "Creating a new project named '{name}' " +
+                "using '{template}' as the template..."
+            ).format(
+                name=self.name,
+                template=template.name
+            ))
 
         # copy our template to the new project name
         template.copy_to(self.name)
