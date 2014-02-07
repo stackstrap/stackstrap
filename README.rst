@@ -24,7 +24,7 @@ with Jinja and a bit of file management. Keep your Templates in version control
 and constantly add in new best practices.
 
 Moreover, StackStrap is a philosophy geared towards helping teams with many different 
-points of view and skills sets work together efficiently in short time frames. System 
+points of view and skill sets to work together efficiently in short time frames. System 
 management is all rolled in because of the power of Salt. This means that development 
 environments are always tailored to the current branch. It is also very keen on 
 automation, with the idea that someone integrating cool CSS transforms can be ready 
