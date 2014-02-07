@@ -1,5 +1,8 @@
 # [Changelog](https://github.com/freesurface/stackstrap/releases)
 
+## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.2...0.2.1)
+
+
 ## [0.2.1](https://github.com/freesurface/stackstrap/compare/0.2.0...0.2.1)
 
 * [e9bb5ce](https://github.com/freesurface/stackstrap/commit/e9bb5ce) Updated test to use test project repo's new location
