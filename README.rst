@@ -74,67 +74,35 @@ The source for the documentation is in the `docs` directory.
 .. _Vagrant: http://vagrantup.com/
 .. _community repository of Salt states: http://github.com/freesurface/stackstrap-salt/
 
-Salted Boxes
-------------
+Vagrant Boxes
+-------------
 
 Ubuntu 12.04
 ^^^^^^^^^^^^
 
-32 bit:
-
 .. code::
 
-    http://boxes.stackstrap.org/virtualbox/ubuntu1204-i386-saltlatest.box
+    http://boxes.stackstrap.org/virtualbox/ubuntu1204-stackstrap.box
 
-64 bit:
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/ubuntu1204-saltlatest.box
-
-Debian 7.3
+Debian 7.4
 ^^^^^^^^^^
 
-32 bit:
-
 .. code::
 
-    http://boxes.stackstrap.org/virtualbox/debian73-i386-saltlatest.box
-
-64 bit:
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/debian73-saltlatest.box
+    http://boxes.stackstrap.org/virtualbox/debian74-stackstrap.box
 
 CentOS 6.5
 ^^^^^^^^^^
 
-32 bit:
-
 .. code::
 
-    http://boxes.stackstrap.org/virtualbox/centos65-i386-saltlatest.box
-
-64 bit:
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/centos65-saltlatest.box
+    http://boxes.stackstrap.org/virtualbox/centos65-stackstrap.box
 
 Fedora 20
 ^^^^^^^^^
 
-32 bit:
-
 .. code::
 
-    http://boxes.stackstrap.org/virtualbox/fedora20-i386-saltlatest.box
-
-64 bit:
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/fedora20-saltlatest.box
+    http://boxes.stackstrap.org/virtualbox/fedora20-stackstrap.box
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
