@@ -1,7 +1,7 @@
 StackStrap
 ==========
 StackStrap is a simple command line tool which plays it's role in a larger effort
-to make developer operations no more complicated than typing `vagrant up`.
+to make developer operations no more complicated than typing **vagrant up**.
 It combines the power of Salt_ and Vagrant_ with templates and a macro
 driven `community repository of Salt states`_ to get developers on board
 with the latest linux based dev ops tools in a pinch.
