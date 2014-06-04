@@ -77,35 +77,4 @@ The source for the documentation is in the `docs` directory.
 .. _Vagrant: http://vagrantup.com/
 .. _community repository of Salt states: http://github.com/freesurface/stackstrap-salt/
 
-Vagrant Boxes
--------------
-
-Ubuntu 12.04
-^^^^^^^^^^^^
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/ubuntu1204-stackstrap.box
-
-Debian 7.4
-^^^^^^^^^^
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/debian74-stackstrap.box
-
-CentOS 6.5
-^^^^^^^^^^
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/centos65-stackstrap.box
-
-Fedora 20
-^^^^^^^^^
-
-.. code::
-
-    http://boxes.stackstrap.org/virtualbox/fedora20-stackstrap.box
-
 .. vim: set ts=4 sw=4 sts=4 et ai :
