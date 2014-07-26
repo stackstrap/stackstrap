@@ -14,4 +14,9 @@ script: coverage run --source=stackstrap setup.py nosetests
 after_success:
   coveralls
 
+branches:
+  except:
+    - feature-context
+    - gh-pages
+
 # vim: set ft=yaml sw=2 sws=2 ts=2 et :
