@@ -9,7 +9,7 @@ Adding a template
 To add a template use the ``stackstrap template add`` command and provide it
 a name along with the GIT URL of a StackStrap template::
 
-   stackstrap template add django https://github.com/freesurface/stackstrap-django.git
+   stackstrap template add django https://github.com/stackstrap/stackstrap-django.git
 
 Creating a new project
 ----------------------

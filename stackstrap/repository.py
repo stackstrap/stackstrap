@@ -29,7 +29,7 @@ class Repository(object):
         try:
             # create our git interface via the sh module
             # see:
-            # github.com/freesurface/stackstrap/blob/master/scripts/loose_ssh.sh
+            # github.com/stackstrap/stackstrap/blob/master/scripts/loose_ssh.sh
             git = sh.git.bake(_cwd=tmp_dir, _env={
                 'GIT_SSH': "loose_ssh.sh"
             })

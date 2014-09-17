@@ -6,11 +6,11 @@ effort to make developer operations no more complicated than typing
 templates and a macro driven `community repository of Salt states`_ to get
 developers on board with the latest Linux dev ops tools in a pinch.
 
-.. image:: https://api.travis-ci.org/freesurface/stackstrap.png?branch=master
-           :target: https://travis-ci.org/freesurface/stackstrap
+.. image:: https://api.travis-ci.org/stackstrap/stackstrap.png?branch=master
+           :target: https://travis-ci.org/stackstrap/stackstrap
 
-.. image:: https://coveralls.io/repos/freesurface/stackstrap/badge.png
-           :target: https://coveralls.io/r/freesurface/stackstrap
+.. image:: https://coveralls.io/repos/stackstrap/stackstrap/badge.png
+           :target: https://coveralls.io/r/stackstrap/stackstrap
 
 .. image:: https://pypip.in/v/stackstrap/badge.png
            :target: https://crate.io/packages/stackstrap/
@@ -46,7 +46,7 @@ Add a Template:
 
 .. code::
 
-    stackstrap template add django https://github.com/freesurface/stackstrap-django.git
+    stackstrap template add django https://github.com/stackstrap/stackstrap-django.git
 
 Create a new Project:
 
@@ -75,6 +75,6 @@ The source for the documentation is in the `docs` directory.
 
 .. _Salt: http://saltstack.org/
 .. _Vagrant: http://vagrantup.com/
-.. _community repository of Salt states: http://github.com/freesurface/stackstrap-salt/
+.. _community repository of Salt states: http://github.com/stackstrap/stackstrap-salt/
 
 .. vim: set ts=4 sw=4 sts=4 et ai :

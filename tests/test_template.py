@@ -12,8 +12,8 @@ from . import StackStrapTestCase
 
 
 # setup repos & branches
-repo_url = 'https://github.com/freesurface/stackstrap-test-template.git'
-missing_repo_url = 'https://fail:fail@github.com/freesurface/stackstrap-non-existant-template.git'
+repo_url = 'https://github.com/stackstrap/stackstrap-test-template.git'
+missing_repo_url = 'https://fail:fail@github.com/stackstrap/stackstrap-non-existant-template.git'
 bad_repo_url = 'FAIL:FAIL/F/A/I/L'
 bad_meta_branch = 'bad-meta-for-tests'
 missing_meta_branch = 'missing-meta-for-tests'

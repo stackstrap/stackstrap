@@ -51,7 +51,7 @@ Contents
 .. _Vagrant: http://vagrantup.com/
 .. _Salt: http://saltstack.com/
 .. _provisioners: http://docs.vagrantup.com/v2/provisioning/index.html
-.. _community repository: https://github.com/freesurface/stackstrap-salt
-.. _Template: https://github.com/freesurface/stackstrap-django
+.. _community repository: https://github.com/stackstrap/stackstrap-salt
+.. _Template: https://github.com/stackstrap/stackstrap-django
 .. _Jinja: http://jinja.pocoo.org
 .. _Google Group: https://groups.google.com/d/forum/stackstrap

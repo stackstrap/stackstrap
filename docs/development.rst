@@ -11,7 +11,7 @@ Get the code
 Clone this repository to a local directory on your workstation and then fetch
 the submodules::
 
-    git clone https://github.com/freesurface/stackstrap.git
+    git clone https://github.com/stackstrap/stackstrap.git
     git submodule init
     git submodule update
 
@@ -67,7 +67,7 @@ server on the correct port::
 .. _Django: http://djangoproject.com/
 .. _Vagrant: http://vagrantup.com/
 .. _VirtualBox: http://virtualbox.org/
-.. _community repository: https://github.com/freesurface/stackstrap-salt
+.. _community repository: https://github.com/stackstrap/stackstrap-salt
 .. _Fabric: http://fabfile.org/
 
 .. vim: set ts=4 sw=4 sts=4 et ai :

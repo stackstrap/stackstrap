@@ -10,7 +10,7 @@ from . import StackStrapTestCase
 
 
 # setup our repo & cache urls & dirs
-repo_url = 'https://github.com/freesurface/stackstrap-test-template.git'
+repo_url = 'https://github.com/stackstrap/stackstrap-test-template.git'
 repo_cache_name = ''.join([
     c if c.isalnum() else '-'
     for c in repo_url

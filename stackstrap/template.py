@@ -9,7 +9,7 @@ import yaml
 from stackstrap.config import settings
 from stackstrap.repository import Repository
 
-MASTER_TEMPLATE_URL = 'https://github.com/freesurface/stackstrap-master-template.git'
+MASTER_TEMPLATE_URL = 'https://github.com/stackstrap/stackstrap-master-template.git'
 
 def template_dir(*parts):
     return settings.mkdir('templates', *parts)
