@@ -66,12 +66,6 @@ Vagrant Up:
 
     vagrant up
 
-Documentation
--------------
-Full documentation can be found at RTD: http://stackstrap.readthedocs.org
-
-The source for the documentation is in the `docs` directory.
-
 
 .. _Salt: http://saltstack.org/
 .. _Vagrant: http://vagrantup.com/
