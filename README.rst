@@ -1,3 +1,17 @@
+Phasing out the CLI and Templates
+=================================
+After some time we have come to realize that the ideas behind StackStrap
+are much more popular outside of the Python community. We have done a lot
+of thinking and come to the conclusion that the Template and parser need
+to be their own project so that StackStrap can focus on States that empower
+Vagrant based DevOps.
+
+A new project is being kicked off to better handle Templates. Templates will
+still be offered that focus on StackStrap methods, but the tool will focus on
+the Node.js community.
+
+See `Pollinate`_ to learn more!
+
 StackStrap
 ==========
 StackStrap is a simple command line tool which plays a key role in a larger
@@ -70,5 +84,6 @@ Vagrant Up:
 .. _Salt: http://saltstack.org/
 .. _Vagrant: http://vagrantup.com/
 .. _community repository of Salt states: http://github.com/stackstrap/stackstrap-salt/
+.. _Pollinate: https://github.com/codingcoop/pollinate
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
