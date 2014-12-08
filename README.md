@@ -2,13 +2,10 @@ StackStrap
 ==========
 [![](https://api.travis-ci.org/stackstrap/stackstrap.png?branch=master)]
 (https://travis-ci.org/stackstrap/stackstrap)
-
 [![](https://coveralls.io/repos/stackstrap/stackstrap/badge.png)]
 (https://coveralls.io/r/stackstrap/stackstrap)
-
 [![](https://pypip.in/v/stackstrap/badge.png)]
 (https://crate.io/packages/stackstrap/)
-
 [![](https://pypip.in/d/stackstrap/badge.png)]
 (https://crate.io/packages/stackstrap/)
 
@@ -32,7 +29,7 @@ but the overall project is focused on Templating a project with any tools.
 
 See [Pollinate][pollinate] to learn more!
 
-[twelve-factor][http://12factor.net/]
-[pollinate][https://github.com/codingcoop/pollinate]
+[twelve-factor]: http://12factor.net/
+[pollinate]: https://github.com/codingcoop/pollinate
 
 .. vim: set ts=4 sw=4 sts=4 et ai :
