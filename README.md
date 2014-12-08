@@ -31,5 +31,3 @@ See [Pollinate][pollinate] to learn more!
 
 [twelve-factor]: http://12factor.net/
 [pollinate]: https://github.com/codingcoop/pollinate
-
-.. vim: set ts=4 sw=4 sts=4 et ai :
