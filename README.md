@@ -15,8 +15,8 @@ After some time we have come to realize that the ideas behind StackStrap
 should not be tied to any particular community. It is also clear that
 the project has been difficult to explain.
 
-Is it a tool? Is it a Vagrant extension? Is it a collection of highly usable
-Salt States? It will likely become all of those things. Ultimately StackStrap
+Is it a tool? Is it a collection of highly usable Salt States? Is it a Vagrant
+plugin? It will likely become all of those things. Ultimately StackStrap
 is an attempt to construct a PaaS by combining three tools in the most common
 sense way possible. The goal is to ensure that the process remains entirely
 suggestive so that users can pick and choose how to use the offerings.
