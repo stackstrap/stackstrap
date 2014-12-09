@@ -23,11 +23,4 @@ suggestive so that users can pick and choose how to use the offerings.
 The guidlines outlined in [twelve-factor app is a methodology][twelve-factor]
 will always be kept in mind, but will never trump rational argument.
 
-A new project is being kicked off to better handle Templating file and folder
-scaffolds. Templates will still be offered that focus on StackStrap methods,
-but the overall project is focused on Templating a project with any tools.
-
-See [Pollinate][pollinate] to learn more!
-
 [twelve-factor]: http://12factor.net/
-[pollinate]: https://github.com/codingcoop/pollinate
