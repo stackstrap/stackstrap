@@ -29,7 +29,7 @@ setup(
     version=version,
     license="Apache License, Version 2.0",
     description='A tool that uses vagrant + salt to make development more awesome',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     author='Evan Borgstrom',
     author_email='evan@borgstrom.ca',
     url='https://github.com/stackstrap/stackstrap',

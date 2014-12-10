@@ -44,7 +44,7 @@ class TemplateTestCase(StackStrapTestCase):
         template = make_template()
         self.assertEqual(template.meta['template_name'], 'Your template')
         self.assertEqual(template.meta['template_description'], 'Add your description here.')
-        self.assertEqual(template.meta['cleanup'], ['README.rst'])
+        self.assertEqual(template.meta['cleanup'], ['README.md'])
         self.assertEqual(template.meta['file_templates'], ['Vagrantfile', 'salt/pillar/stackstrap.sls'])
         self.assertEqual(template.meta['path_templates'], [{'PROJECT-README': 'README'}])
 

@@ -28,7 +28,7 @@ class ProjectTestCase(StackStrapTestCase):
 
             assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "Vagrantfile"))
             assert os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README"))
-            assert not os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README.rst"))
+            assert not os.path.isfile(os.path.join(tmp_dir, "test_project_creation", "README.md"))
         finally:
             os.chdir(orig_dir)
             shutil.rmtree(tmp_dir)
