@@ -23,4 +23,10 @@ suggestive so that users can pick and choose how to use the offerings.
 The guidlines outlined in [twelve-factor app is a methodology][twelve-factor]
 will always be kept in mind, but will never trump rational argument.
 
+## What is next?
+
+This tool will soon be undergoing a [rebuild]. The idea is to worry less about
+Templates and more about the services which run your application.
+
 [twelve-factor]: http://12factor.net/
+[rebuild]: https://github.com/stackstrap/8
