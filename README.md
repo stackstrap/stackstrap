@@ -25,9 +25,9 @@ will always be kept in mind, but will never trump rational argument.
 
 ## What is next?
 
-This tool will soon be undergoing a [rebuild]. Improvements will be made in how
-Templates are dealt with and the tool will also start to offer options for
-easily managing services that power your application.
+This tool will soon be undergoing a [rebuild]. Improvements will be made to how
+Templates are dealt with and the tool will start to offer options for easily
+managing the services that run your application.
 
 [twelve-factor]: http://12factor.net/
 [rebuild]: https://github.com/stackstrap/8
