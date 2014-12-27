@@ -11,9 +11,6 @@ StackStrap
 
 What is StackStrap?
 ===================
-After some time we have come to realize that the ideas behind StackStrap
-should not be tied to any particular community. It is also clear that
-the project has been difficult to explain.
 
 Is it a tool? Is it a collection of highly usable Salt States? Is it a Vagrant
 plugin? It will likely become all of those things. Ultimately StackStrap
