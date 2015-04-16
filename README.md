@@ -32,11 +32,4 @@ held dear and the guidlines outlined for [twelve-factor][twelve-factor] apps
 will always be kept in mind, but nothing will trump the need to be easy to
 understand.
 
-## What is next?
-
-This tool will soon be undergoing a [rebuild]. Improvements will be made to how
-Templates are dealt with and the tool will start to offer options for easily
-managing the services that run your application.
-
 [twelve-factor]: http://12factor.net/
-[rebuild]: https://github.com/stackstrap/8
