@@ -4,9 +4,9 @@ StackStrap
 (https://travis-ci.org/stackstrap/stackstrap)
 [![](https://coveralls.io/repos/stackstrap/stackstrap/badge.png)]
 (https://coveralls.io/r/stackstrap/stackstrap)
-[![](https://pypip.in/v/stackstrap/badge.png)]
+[![](https://img.shields.io/pypi/v/stackstrap.svg)]
 (https://crate.io/packages/stackstrap/)
-[![](https://pypip.in/d/stackstrap/badge.png)]
+[![](https://img.shields.io/pypi/dm/stackstrap.svg)]
 (https://crate.io/packages/stackstrap/)
 
 What is StackStrap?
