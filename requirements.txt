@@ -1,4 +1,4 @@
-PyYAML==3.11
+PyYAML==5.4
 Jinja2>=2.7,<2.8
 sh>=1.09
 
